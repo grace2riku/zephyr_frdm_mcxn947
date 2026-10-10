@@ -1,0 +1,4 @@
+# 実測ログはUARTのCR/LF/NULを含む原文のまま保存する。
+stages/01_hello_world/evidence/* -text -whitespace
+# 上流からコピーしたライセンス本文も改変しない。
+stages/01_hello_world/LICENSE.apache-2.0 -text -whitespace

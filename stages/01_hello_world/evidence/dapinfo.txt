@@ -1,0 +1,16 @@
+Vendor Name = NXP Semiconductors
+Product Name = MCU-Link CMSIS-DAP V3.128
+Serial Number = HN2APUBRDCEPT
+CMSIS-DAP Version = 2.1.1
+Target Device Vendor = NXP
+Target Device Name = MCXN947VDFT
+Target Board Vendor = NXP
+Target Board Name = FRDM-MCXN947
+Firmware Version = 3.128
+Capabilities =
+	SWD+JTAG
+	SWO UART 4096 byte buffer
+	Atomic
+	Test Domain Timer Frequency 150000000
+	UART USB COM Port
+	Packets 512 bytes x 8

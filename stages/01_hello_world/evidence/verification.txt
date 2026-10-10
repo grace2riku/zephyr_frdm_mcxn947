@@ -1,0 +1,12 @@
+Zephyr SHA matches selection; all source repositories clean.
+Active modules: 67; all HEADs match frozen manifest and manifest-rev.
+Inactive projects excluded by official defaults: 17.
+Stage sample files are byte-for-byte identical to upstream v4.4.2.
+01_hello_world_official zephyr.bin SHA-256: 70d8be50e09c74163f0097d933920d1b8c1924c51407ef3935dbb0ff154be0c5
+01_hello_world zephyr.bin SHA-256: 70d8be50e09c74163f0097d933920d1b8c1924c51407ef3935dbb0ff154be0c5
+01_hello_world_debug zephyr.bin SHA-256: 40be3ff4f69d1de555a8d178f3f864e88a438fe97ecfa0c4b47ffecdb0ce8a84
+Official and standalone normal-build firmware binaries are identical.
+uart-official-reset.log: 2 Hello World lines (flash restart and explicit reset).
+uart-reset.log: 3 Hello World lines (flash restart and explicit reset).
+west debug log confirms main breakpoint, next, step, priority=0, RAM read and detach.
+pip check: No broken requirements found.

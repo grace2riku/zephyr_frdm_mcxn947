@@ -1,0 +1,5 @@
+
+DeviceID    : COM5
+Name        : MCU-Link VCom Port (COM5)
+PNPDeviceID : USB\VID_1FC9&PID_0143&MI_02\8&3207D04C&0&0002
+

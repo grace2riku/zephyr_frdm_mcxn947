@@ -1,0 +1,3 @@
+  #  Description                                    Serial
+---  ---------------------------------------------  -------------
+  1  MCU-LINK FRDM-MCXN947 (r0E7) CMSIS-DAP V3.128  HN2APUBRDCEPT
