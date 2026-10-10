@@ -1,0 +1,19 @@
+-- west debugserver: rebuilding
+ninja: no work to do.
+-- west debugserver: using runner linkserver
+RUNNER - gdb_port = 3333, semih port = 8888
+-- runners.linkserver: LinkServer: C:\nxp\LinkServer_1.4.85\Linkserver.exe, version v1.4.85
+INFO: Exact match for MCXN947:FRDM-MCXN947 found
+INFO: Selected device MCXN947:FRDM-MCXN947
+ERROR: Failed to boot probes
+ERRMSG: UnicodeDecodeError: 'utf-8' codec can't decode byte 0x94 in position 21: invalid start byte
+INFO: Getting available probes
+INFO: Selecting probe by serial substring
+INFO: Selected probe #1 HN2APUBRDCEPT (MCU-LINK FRDM-MCXN947 (r0E7) CMSIS-DAP V3.128)
+INFO: MCU-Link firmware update check: local firmware [3.133] can be programmed on the selected probe ([HN2APUBRDCEPT] [MCU-LINK FRDM-MCXN947 (r0E7) CMSIS-DAP V3.128])
+Firmware update check: - the update can be performed using `auto` mode
+GDB server listening on port 3333 in debug mode (core cm33_core0)
+Semihosting server listening on port 8888 (core cm33_core0)
+INFO: Connected to core cm33_core0
+INFO: Disconnected from core cm33_core0
+Gdbserver on port 3333 has closed

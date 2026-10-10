@@ -1,0 +1,55 @@
+0x20018040 in ?? ()
+Failed to reset to initial execution state - Ec(06). No image address available for soft reset.
+Loading section rom_start, size 0x2b0 lma 0x10000000
+Loading section text, size 0x6748 lma 0x100002b0
+Loading section .ARM.exidx, size 0x8 lma 0x100069f8
+Loading section initlevel, size 0xc0 lma 0x10006a00
+Loading section device_area, size 0x24c lma 0x10006ac0
+Loading section sw_isr_table, size 0x4e0 lma 0x10006d0c
+Loading section gpio_driver_api_area, size 0x24 lma 0x100071ec
+Loading section clock_control_driver_api_area, size 0x1c lma 0x10007210
+Loading section uart_driver_api_area, size 0x4c lma 0x1000722c
+Loading section zephyr_dbg_info, size 0x44 lma 0x10007278
+Loading section rodata, size 0x94c lma 0x100072bc
+Loading section datas, size 0x14c lma 0x10007c08
+Loading section device_states, size 0x2c lma 0x10007d54
+Loading section .last_section, size 0x4 lma 0x10007d80
+Start address 0x10001b20, load size 32132
+Transfer rate: 32 KB/sec, 2142 bytes/write.
+Processor connection reset
+Breakpoint 1 at 0x100013a6: file C:/Users/grace/Documents/ChatGPT/zephyr_frdm_mcxn947/stages/01_hello_world/src/main.c, line 11.
+Note: automatically using hardware breakpoints for read-only addresses.
+[New Thread 805306936]
+[Thread 1 exited]
+[New Thread 805306760]
+[Switching to Thread 805306936]
+
+Thread 2 hit Breakpoint 1, main () at C:/Users/grace/Documents/ChatGPT/zephyr_frdm_mcxn947/stages/01_hello_world/src/main.c:11
+11		printf("Hello World! %s\n", CONFIG_BOARD_TARGET);
+6	
+7	#include <stdio.h>
+8	
+9	int main(void)
+10	{
+11		printf("Hello World! %s\n", CONFIG_BOARD_TARGET);
+12	
+13		return 0;
+14	}
+No locals.
+$1 = 0 '\000'
+$2 = 0x30000238
+0x30000238 <z_main_thread>:	0x30000498	0x30000498	0x00000000	0x00000001
+0x30000248 <z_main_thread+16>:	0x00000080	0x00000000	0x00000000	0x00000000
+pc             0x100013a6          0x100013a6 <main+2>
+sp             0x300011d0          0x300011d0 <z_main_stack+984>
+lr             0x10003701          0x10003701 <bg_thread_main+32>
+r0             0x0                 0
+13		return 0;
+bg_thread_main (unused1=<optimized out>, unused2=<optimized out>, unused3=<optimized out>) at C:/Users/grace/zephyrproject-mcxn947/zephyr/kernel/init.c:351
+351		z_thread_essential_clear(&z_main_thread);
+z_thread_essential_clear (thread=0x30000238 <z_main_thread>) at C:/Users/grace/zephyrproject-mcxn947/zephyr/kernel/include/kthread.h:210
+210		thread->base.user_options &= ~K_ESSENTIAL;
+#0  z_thread_essential_clear (thread=0x30000238 <z_main_thread>) at C:/Users/grace/zephyrproject-mcxn947/zephyr/kernel/include/kthread.h:210
+#1  bg_thread_main (unused1=<optimized out>, unused2=<optimized out>, unused3=<optimized out>) at C:/Users/grace/zephyrproject-mcxn947/zephyr/kernel/init.c:351
+#2  0x1000142e in z_thread_entry (entry=0x100036e1 <bg_thread_main>, p1=0x0, p2=0x0, p3=0x0) at C:/Users/grace/zephyrproject-mcxn947/zephyr/lib/os/thread_entry.c:60
+[Inferior 1 (Remote target) detached]

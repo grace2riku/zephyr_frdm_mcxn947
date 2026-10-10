@@ -2,7 +2,7 @@
 
 調査・選定日：2026-10-10（日本時間）。対象：[段階0・イシュー #1](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/1)。
 
-状態：段階0の選定・記録は完了。導入、ビルド、書き込み、デバッグ、実機確認は段階1で行う。「採用」は使用する版を決めたという意味であり、動作確認済みという意味ではない。
+状態：段階0の選定・記録は完了。段階0時点では導入・ビルド・実機確認は未実施だった。段階1で環境構築とHello Worldのビルド・書き込み・UART・GDB確認を完了し、[実測結果](../01_hello_world/README.md)を記録した。本書の選定根拠と段階1の実機検証結果を区別する。
 
 ## 選定の結論
 
@@ -33,7 +33,7 @@ PATH、実行ファイルのバージョン、Windowsのインストール情報
 | 既存Armコンパイラ | PATHはGNU Arm Embedded 10.3-2021.10の配置を指す。Arm GNU Toolchain 13.2.Rel1のインストール情報もあり | 複数版の混在を避け、Zephyr SDKを明示 |
 | J-Link | 7.94bのインストール情報あり、PATHにはない | 初期構成はボード既定のCMSIS-DAP／LinkServerに統一 |
 | シリアル端末 | Tera Term 5.4.0。実行ファイルのProductVersionでも確認 | 既存版を使用 |
-| 補助ツール | 7-Zip 25.01あり。gperfとdtcはPATHにない | 7-Zipを再利用。gperfを追加しdtcはSDK付属を使用 |
+| 補助ツール | 段階0時点では7-Zip 25.01あり。gperfとdtcはPATHにない | 7-Zipを再利用。段階1でgperf 3.1とDTC 1.6.1を別導入（DTCは実物確認により訂正） |
 | WSL | Ubuntuディストリビューション登録あり | 代案はあるが初期開発はWindowsネイティブに統一 |
 | Rust／Cargo | PATHに見つからない | 段階14で選定 |
 | シリアルポート | Win32_SerialPortでは列挙結果なし | 接続やドライバの正常性は判断できない。段階1でCOM番号とプローブを確認 |
@@ -76,7 +76,7 @@ wsl --list --quiet
 | MCU-Linkファームウェア | **工場出荷CMSIS-DAPを維持**。実装版は段階1で記録 | PCの更新パッケージ3.133とボード上の版は別物。必要時のみ更新し、更新前後を記録 [Z2, L2] |
 | シリアル端末 | **Tera Term 5.4.0** | 導入済みで115200 bps／8N1を設定できる |
 | gperf | **3.1、Windows x64** | ZephyrのWindows導入手順で案内される`oss-winget.gperf`の提供版を固定 [Z7, T6] |
-| Devicetree compiler | **SDK付属DTC 1.6.0** | 最低1.4.6を満たす。段階1のビルドログで実際のパスと版を確認 [Z7, T1] |
+| Devicetree compiler | **oss-winget.dtc 1.6.1、Windows x64** | 段階1の実物確認でWindows SDK内にDTCがないと判明したため、当初の「SDK付属1.6.0」を訂正。採用Zephyrの公式Windows手順が案内する配布物を追加。最低1.4.6を満たす [Z7, T8] |
 | 展開ツール | **7-Zip 25.01** | 既存版を再利用 |
 | NT-Shell | 段階7で選定 | 取得元・タグ・コミット・ライセンス・取り込み方法を記録 |
 | Slint／Rust／Cargo | 段階14で選定 | Slintの採用タグとZephyrの組合せ、Rust要件を確認して固定 |
@@ -114,7 +114,7 @@ LinkServer 1.4.85はIntel HEX対応が追加された1.5.30より前だが、採
 
 ## 依存関係とワークスペース
 
-依存ソースは学習用アプリのGitリポジトリの外へ置く。パスを短めにし空白・日本語を避ける。以下は保存先の決定であり、まだ作成していない。
+依存ソースは学習用アプリのGitリポジトリの外へ置く。パスを短めにし空白・日本語を避ける。以下は段階0で決めた保存先で、段階1で構築済み。
 
 | 用途 | 保存先 |
 |---|---|
@@ -126,7 +126,7 @@ LinkServer 1.4.85はIntel HEX対応が追加された1.5.30より前だが、採
 
 段階1でPython 3.12.10、CMake 3.31.8、Ninja 1.13.1、gperf 3.1を指定して導入する。wingetの無指定導入で最新版を選ばず、指定版が提供されない場合は上記の公式配布物を使う。インストーラ／アーカイブのファイル名とSHA-256も記録する。環境変数は開発セッションで明示し、既存の別用途のコンパイラ設定を上書きしない。
 
-### 段階1の初回取得手順（未実行）
+### 段階1の初回取得手順（段階0時点で未実行）
 
 前提：ホストツール導入後、新しいPowerShellで`py -3.12 --version`が3.12.10を返すこと。各コマンドの成功を確認して次へ進む。
 
@@ -140,9 +140,12 @@ python --version
 python -m pip install 'west==1.5.0'
 
 west init -m https://github.com/zephyrproject-rtos/zephyr `
-    --mr dccb09599635bdff17633fa7e9dab014b91dce90 $zephyrWorkspace
+    --mr v4.4.2 -o=--depth=1 $zephyrWorkspace
+if ($LASTEXITCODE -ne 0) { throw 'west init failed' }
+if ((git -C "$zephyrWorkspace\zephyr" rev-parse HEAD) -ne `
+    'dccb09599635bdff17633fa7e9dab014b91dce90') { throw 'Zephyr SHA mismatch' }
 Set-Location $zephyrWorkspace
-west update
+west update --narrow -o=--depth=1
 west zephyr-export
 
 # Zephyrの依存導入によってwestの版が変わらないよう制約を与える。
@@ -166,9 +169,11 @@ gperf --version
 LinkServer -v
 ```
 
-venvの有効化が実行ポリシーで拒否された場合は、段階1で既存設定を確認して通常のPowerShell／cmdでの手順を決める。ここではPCの実行ポリシーを変更していない。SDKのホストツールも取得し、初回ビルドでDTCの使用パスと版を記録する。
+venvの有効化が実行ポリシーで拒否された場合は、段階1で既存設定を確認して通常のPowerShell／cmdでの手順を決める。ここではPCの実行ポリシーを変更していない。段階1では[セッション設定スクリプト](../01_hello_world/scripts/env.ps1)でvenvの実行ファイルとツールのPATHを明示する。Windows SDKの実物にDTCがないため別途1.6.1を導入する。
 
-### 段階1のビルド・実行・デバッグ手順（未実行）
+2026-10-10（段階1での訂正）：west 1.5.0の`init --mr`はブランチ名またはタグ名を受け取る。コミットSHAを渡す当初手順は失敗したため、上記をタグ取得＋SHA検証へ修正した。`--depth=1`は履歴量を抑えるだけで、使用ソースの版は変えない。実行済みの環境構築・検証結果は[段階1](../01_hello_world/README.md)を参照。
+
+### 段階1のビルド・実行・デバッグ手順（段階0時点で未実行）
 
 上記と同じセッションでZephyr付属Hello Worldを使用する。
 
@@ -180,7 +185,7 @@ west flash -d "$zephyrWorkspace\build\01_hello_world" -r linkserver
 west debug -d "$zephyrWorkspace\build\01_hello_world" -r linkserver
 ```
 
-期待する結果：ビルド完了、Tera Termに`Hello World! frdm_mcxn947/mcxn947/cpu0`が出ること、GDBでブレークポイント・ステップ実行ができること。現在はすべて未実施。段階1でコマンド、実行ディレクトリ、ログと未解決事項を記録する。
+期待する結果：ビルド完了、UARTに`Hello World! frdm_mcxn947/mcxn947/cpu0`が出ること、GDBでブレークポイント・ステップ実行ができること。段階0時点では未実施だった。段階1でpyserialによるUART受信とGDB確認を完了し、コマンド、実行ディレクトリ、ログと未解決事項を記録した。Tera TermのGUI表示は未確認。
 
 ### 依存モジュールの固定と再構築
 
@@ -188,22 +193,22 @@ ZephyrはOS・ドライバ・ビルド設定、SDKはコンパイラ等の配布
 
 1. Zephyrを上記コミットに固定し、段階1で`git rev-parse HEAD`との一致を確認する。
 2. そのコミットの`west.yml`とimportされるsubmanifestで`west update`する。モジュールだけを手動で最新版へ切り替えない。例：`hal_nxp`は`7554bc0f6f6c284972eba7b2c17b16fbb9cc0ad0` [Z11]。
-3. 取得成功後に`west manifest --freeze`でimportを展開したモジュールのSHAを保存する。`self`にはZephyr本体のSHAが固定されないため、本書のZephyr SHAを必ず併用する [Z12]。
+3. 取得成功後に`west manifest --freeze --active-only`でimportを展開した有効モジュールのSHAを保存する。公式manifestの既定グループに従い、無効なoptional／testing／babblesimは取得していないため除く。`self`にはZephyr本体のSHAが固定されないため、本書のZephyr SHAを必ず併用する [Z12]。
 4. 採用ZephyrのrequirementsでPython依存を解決し、専用venvの全パッケージを`pip freeze`で保存する。初期westの版はconstraintsで固定する。
 5. 再構築は同じPython／SDK／CMake／Ninjaを用意し、同じZephyr SHAで取得する。保存したfrozen manifestとの差、各リポジトリのローカル変更、`pip check`を確認する。相違があれば再現成功とは扱わない。
 
-段階1で取得・解決後に保存する証跡（未実行）：
+段階1で取得・解決後に保存する証跡（保存済み）：
 
 ```powershell
 Set-Location $zephyrWorkspace
-west manifest --freeze -o "$learningRepo\stages\00_versions\west-frozen.yml"
+west manifest --freeze --active-only -o "$learningRepo\stages\00_versions\west-frozen.yml"
 west list -f '{name} {revision} {sha} {path}' |
     Set-Content -Encoding utf8 "$learningRepo\stages\00_versions\west-projects.txt"
-python -m pip freeze |
+python -m pip freeze --all |
     Set-Content -Encoding utf8 "$learningRepo\stages\00_versions\python-requirements-lock.txt"
 ```
 
-これらは実際の取得・解決結果から生成し、今回は空の固定ファイルを作らない。再取得時は新しい専用venvへ`west==1.5.0`を入れ、保存した`python-requirements-lock.txt`を`pip install -r`で復元する。`pip freeze`はSDKや外部ツール、配布アーカイブのハッシュまで固定するものではないため、版とSHA-256は別に記録する。
+これらは段階0では空の固定ファイルを作らず、段階1で実際の取得・解決結果から生成した。再取得時は新しい専用venvへ`west==1.5.0`を入れ、保存した`python-requirements-lock.txt`を`pip install -r`で復元する。`pip freeze --all`はpip等も含めるが、SDKや外部ツール、配布アーカイブのハッシュまで固定するものではないため、版とSHA-256は別に記録する。
 
 リポジトリに残すのはアプリ、設定、手順、固定情報、検証記録。Zephyr本体、モジュール、SDK、venv、ビルド出力はコミットしない。
 
@@ -222,7 +227,7 @@ python -m pip freeze |
 
 変更前後のタグ・コミット・版、変更理由、影響する段階、再ビルド結果、書き込み／デバッグ／実機結果を変更履歴へ追記する。初回ビルドは`-p always`を使い、古いキャッシュの影響を避ける。SDKとZephyrの更新は別項目として扱う。ビルドのみ成功した場合は実機確認済みとは記録しない。
 
-段階1へ引き継ぐ未確認事項：ホストツール導入・Python依存解決、SDK使用パス、基板リビジョン、COM番号とUSBドライバ、MCU-Link実装版、Hello World、LinkServerでの書き込みとGDB接続。LCD／カメラの現物接続は段階10／12、Slint互換性は段階14で確認する。
+段階0時点の引継ぎ未確認事項は、ホストツール導入・Python依存解決、SDK使用パス、基板リビジョン、COM番号とUSBドライバ、MCU-Link実装版、Hello World、LinkServerでの書き込みとGDB接続だった。段階1で基板の印刷リビジョンを除き確認済み（[実測結果](../01_hello_world/README.md)）。LCD／カメラの現物接続は段階10／12、Slint互換性は段階14で確認する。
 
 ## 確認した資料
 
@@ -247,6 +252,7 @@ Zephyrは**v4.4.2の公式ソース**を読み、変化する`latest`との差�
 - T5：[Ninja 1.13.1](https://github.com/ninja-build/ninja/releases/tag/v1.13.1)
 - T6：[winget gperf 3.1 Windows配布情報](https://github.com/microsoft/winget-pkgs/blob/master/manifests/o/oss-winget/gperf/3.1/oss-winget.gperf.installer.yaml)
 - T7：[Python 3.12.15・ソースのみの配布](https://www.python.org/downloads/release/python-31215/)
+- T8：[oss-winget.dtc 1.6.1配布情報](https://github.com/microsoft/winget-pkgs/blob/master/manifests/o/oss-winget/dtc/1.6.1/oss-winget.dtc.installer.yaml)（段階1で追加）
 - L1：PC内のNXP公式同梱資料`C:\nxp\LinkServer_1.4.85\ReleaseNotes.md`と`devices\FRDM-MCXN947.json`（対応版・デバイス定義を確認）
 - L2：PC内のNXP公式同梱資料`C:\nxp\MCU-LINK_installer_3.133\Readme.txt`と`InfoProduct.txt`（更新パッケージの版を確認）
 - S1：[Slint ZephyrデモREADME](https://github.com/slint-ui/slint/blob/master/demos/printerdemo/zephyr/README.md)（masterを参考として確認。採用版の固定は段階14）
@@ -258,3 +264,5 @@ Zephyrは**v4.4.2の公式ソース**を読み、変化する`latest`との差�
 | 2026-10-10 | 初期計画 | 記録用テンプレートを追加 | 段階0の準備 | 選定・実機確認は未実施 |
 | 2026-10-10 | 段階0 | 未選定 → 本書の採用版・Windowsネイティブ方針 | PC実測と採用タグの対応を照合し再現条件を決定 | PC調査・資料確認・選定完了。導入・ビルド・実機確認は未実施 |
 | 2026-10-10 | イシュー #1 | open → closed（completed） | 完了条件4項目を本記録とREADMEに照合し、すべて満たすことを確認 | GitHubの作業内容・完了条件をチェック済みに更新。段階1の実作業は未実施 |
+| 2026-10-10 | 段階1の取得・DTC | SHAを渡すwest init → タグ取得＋SHA検証、SDK付属DTC 1.6.0 → oss-winget.dtc 1.6.1 | westの実際の引数仕様とWindows SDK配布物を照合した結果の訂正 | Zephyr SHA一致、DTC 1.6.1実行・アーカイブSHA-256照合成功。詳細は段階1の記録 |
+| 2026-10-10 | 段階1 | 選定のみ → 環境構築・実機検証完了 | イシュー #2の実施 | 有効67モジュールとPython169パッケージを固定。COM5、MCU-Link V3.128、Hello World書き込み・リセット出力・main停止／ステップ／RAM確認成功 |

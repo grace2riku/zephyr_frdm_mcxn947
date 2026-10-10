@@ -6,13 +6,14 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 ## 現在の状態
 
-2026-10-10：段階0のPC環境調査とバージョン選定を完了しました。Windowsネイティブ、Zephyr v4.4.2、Zephyr SDK 1.0.1を採用します。[選定理由と環境調査結果](stages/00_versions/versions.md)を記録しています。環境構築、サンプル実装、実機検証は段階1以降で行います。
+2026-10-10：段階0と段階1を完了しました。Windowsネイティブ、Zephyr v4.4.2、Zephyr SDK 1.0.1でHello Worldのクリーンビルド・実機書き込み・リセット後のUART出力・GDBデバッグを確認しました。[段階1の日本語手順と検証結果](stages/01_hello_world/README.md)を参照してください。DTCはWindows SDKの実物確認に基づき、段階0の計画を1.6.1の別導入へ訂正しました。
 
 ## 学習計画
 
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [学習イシュー](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues)
 - [段階0：バージョンと開発環境の方針](stages/00_versions/README.md)
+- [段階1：環境構築とHello World](stages/01_hello_world/README.md)
 
 ## フォルダ構成
 
@@ -23,14 +24,25 @@ zephyr_frdm_mcxn947/
 ├── docs/
 │   └── roadmap.md
 └── stages/
-    └── 00_versions/
+    ├── 00_versions/
+    │   ├── README.md
+    │   ├── versions.md
+    │   ├── west-frozen.yml
+    │   ├── west-projects.txt
+    │   └── python-requirements-lock.txt
+    └── 01_hello_world/
         ├── README.md
-        └── versions.md
+        ├── CMakeLists.txt
+        ├── prj.conf
+        ├── debug.conf
+        ├── src/main.c
+        ├── scripts/
+        └── evidence/
 ```
 
-段階1以降のフォルダは、各イシューに着手するときに `stages/01_hello_world/`、`stages/02_led_control/` のように順次追加します。予定名はロードマップに記載しています。
+段階2以降のフォルダは、各イシューに着手するときに `stages/02_led_control/` のように順次追加します。予定名はロードマップに記載しています。
 
-実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。依存関係の取得・固定方針は段階0で決定し、段階1で取得結果と固定情報を記録します。
+実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。段階1で取得した有効67モジュールのSHAとPython依存の固定情報を段階0フォルダへ保存しました。
 
 ## 使用機材と基本方針
 

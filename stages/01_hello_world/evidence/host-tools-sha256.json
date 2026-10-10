@@ -1,0 +1,32 @@
+[
+  {
+    "File": "python-3.12.10-amd64.exe",
+    "Url": "https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe",
+    "Sha256": "67b5635e80ea51072b87941312d00ec8927c4db9ba18938f7ad2d27b328b95fb",
+    "Verified": true
+  },
+  {
+    "File": "cmake-3.31.8-windows-x86_64.zip",
+    "Url": "https://github.com/Kitware/CMake/releases/download/v3.31.8/cmake-3.31.8-windows-x86_64.zip",
+    "Sha256": "81aa9964dbabd71fe02e7ec50472fd3ad56138c49944515ece9001efbff8d719",
+    "Verified": true
+  },
+  {
+    "File": "ninja-win.zip",
+    "Url": "https://github.com/ninja-build/ninja/releases/download/v1.13.1/ninja-win.zip",
+    "Sha256": "26a40fa8595694dec2fad4911e62d29e10525d2133c9a4230b66397774ae25bf",
+    "Verified": true
+  },
+  {
+    "File": "gperf-3.1-win64_x64.zip",
+    "Url": "https://github.com/oss-winget/oss-winget-storage/raw/96ea1b934342f45628a488d3b50d0c37cf06012c/packages/gperf/3.1/gperf-3.1-win64_x64.zip",
+    "Sha256": "5cf7adac20cdcc1ac2ca31816b0e2e261781d88c3d57049f7eae1fb85119f237",
+    "Verified": true
+  },
+  {
+    "File": "dtc-msys2-1.6.1-x86_64.zip",
+    "Url": "https://github.com/oss-winget/oss-winget-storage/raw/96ea1b934342f45628a488d3b50d0c37cf06012c/packages/dtc/1.6.1/dtc-msys2-1.6.1-x86_64.zip",
+    "Sha256": "7aac366f989fd2450d5e641e118734653ea29d0ddb7dbfa33521d57afe852ae3",
+    "Verified": true
+  }
+]
