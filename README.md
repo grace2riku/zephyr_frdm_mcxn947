@@ -6,11 +6,14 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 ## 現在の状態
 
-2026-10-10：段階0と段階1を完了しました。Windowsネイティブ、Zephyr v4.4.2、Zephyr SDK 1.0.1でHello Worldのクリーンビルド・実機書き込み・リセット後のUART出力・GDBデバッグを確認しました。[段階1の日本語手順と検証結果](stages/01_hello_world/README.md)を参照してください。DTCはWindows SDKの実物確認に基づき、段階0の計画を1.6.1の別導入へ訂正しました。
+2026-10-10：段階0の選定・記録は完了しました。段階1では、ユーザー本人のクリーンビルド・書き込み・UART出力・GDBのmain停止／ステップ実行／変数・メモリ確認・終了操作の成功を、本人が提供したログと報告で確認しました。ユーザー本人から「段階1の確認はOK」との確認を受けました。本人のPR確認後にマージとクローズを行う方針で、[イシュー #2](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/2)は開いたままです。[段階1の日本語手順・事前検証・本人の実習結果](stages/01_hello_world/README.md)を参照してください。DTCはWindows SDKの実物確認に基づき、段階0の計画を1.6.1の別導入へ訂正しました。
+
+学習の主体はユーザー本人です。Codexは各操作の理由を日本語で説明し、手順の準備とトラブル対応を支援します。Codexの動作確認はユーザー本人の実習完了として扱いません。ユーザー本人が完了条件を満たしたことを確認し、クローズを依頼または許可した場合のみ、学習イシューをクローズします。
 
 ## 学習計画
 
 - [段階0〜15のロードマップ](docs/roadmap.md)
+- [段階別の質問と回答 QA表](docs/qa.md)
 - [学習イシュー](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues)
 - [段階0：バージョンと開発環境の方針](stages/00_versions/README.md)
 - [段階1：環境構築とHello World](stages/01_hello_world/README.md)
@@ -22,7 +25,8 @@ zephyr_frdm_mcxn947/
 ├── README.md
 ├── .gitignore
 ├── docs/
-│   └── roadmap.md
+│   ├── roadmap.md
+│   └── qa.md
 └── stages/
     ├── 00_versions/
     │   ├── README.md

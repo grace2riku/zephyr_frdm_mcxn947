@@ -1,14 +1,25 @@
 # 段階1：環境構築とHello Worldのビルド・実行・デバッグ
 
 対象：[イシュー #2](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/2)。
-前提：[段階0](../00_versions/README.md)。実施日：2026-10-10（日本時間）。
+前提：[段階0](../00_versions/README.md)。Codexの事前検証日：2026-10-10（日本時間）。
 
 ## 目的と状態
 
 westによるビルド、MCU-Link経由の書き込み、UARTの受信、GDBのソースレベル
-デバッグを学ぶ。環境導入、クリーンビルド、書き込み、リセット後のUART出力、
-main停止・ステップ実行・変数／メモリ確認を実機で完了した。
-確認結果は[evidence/](evidence/)へ保存した。
+デバッグをユーザー本人が操作して学ぶ。Codexは環境導入、クリーンビルド、
+書き込み、リセット後のUART出力、main停止・ステップ実行・変数／メモリ確認を
+事前検証し、結果を[evidence/](evidence/)へ保存した。
+その後、ユーザー本人のビルド・書き込み・UART受信・GDBでのmain停止、
+next／step、変数・メモリ確認、GDBの終了操作の成功を、本人が提供したログと報告で確認した。
+2026-10-10にユーザー本人から「段階1の確認はOK」との確認を受けた。
+本人のPR確認後にマージとクローズを行う方針で、イシュー #2は開いたまま。
+
+実習では、以下の手順を一つずつユーザー本人が実行し、Codexが日本語で操作の理由と
+結果の見方を説明する。事前検証のログは参考として使い、ユーザー本人が観察した
+結果を別に記録する。本人の完了確認とクローズの依頼または許可を得るまで、
+イシューをクローズしない。
+
+実習中の質問と回答は、実習結果とは別に[段階別のQA表](../../docs/qa.md)へ記録する。
 
 `CMakeLists.txt`、`prj.conf`、`src/main.c`は採用Zephyrの公式Hello Worldと
 同じ内容で、このフォルダを独立したアプリとしてビルドできる。
@@ -184,11 +195,16 @@ J17へ接続し、ポートとプローブを列挙する。
 Get-CimInstance Win32_SerialPort | Select-Object DeviceID, Name
 LinkServer probes --no-boot
 LinkServer probe HN2APUBRDCEPT dapinfo
-west flash -d $helloBuild -r linkserver --probe HN2APUBRDCEPT
+west -v flash -d $helloBuild -r linkserver --probe HN2APUBRDCEPT
 ```
 
 `west flash`はボードに合うLinkServer引数とアドレスを渡す。LinkServer 1.4.85は
 HEX未対応なのでrunnerがBINを選ぶ。MCU-LinkはSWDでFlashへ書き込む。
+
+`west -v flash`の`-v`は詳細ログを有効にする。採用ZephyrのLinkServer runnerは、
+LinkServer 1.4.85では通常モードの書き込み処理の標準出力を非表示にする。
+そのため通常の`west flash`で終了コード0でも、Flashの進捗・成功表示は見えないことがある。
+実習では詳細モードを使い、`Finished writing Flash successfully.`と終了コード0を確認する。
 
 Tera TermでCOM5を開き、115200／8N1／フロー制御なしに設定してから
 ボードの**RESET（SW1）**を押す。期待する行は次のとおり。
@@ -223,7 +239,12 @@ SDK付属GDBがELFのデバッグ情報を読み、LinkServerがSWD経由でCPU�
 
 GDBプロンプトで次を実行する。
 
+起動時や長い出力で`--Type <RET> for more, q to quit, c to continue without paging--`
+が表示されたら、Enterで次のページ、`c`＋Enterで残りをまとめて表示する。
+`(gdb)`が表示されてから`set pagination off`で以降のページ送り待ちを無効にする。
+
 ```gdb
+set pagination off
 break main
 monitor reset
 continue
@@ -243,6 +264,16 @@ bt
 含めて1ステップ進む。`print`は型付きの変数を評価し、`x/8wx`は生のメモリを
 32ビット値8個として読む。公式mainにはローカル変数がないため、
 `info locals`の`No locals`は正常。実際の変数確認にはメインスレッドの優先度を使う。
+
+停止状態からデバッグを終了するときは、GDBで以下を一つずつ実行する。
+`monitor ondisconnect cont`は切断時にCPUを再開する設定、`detach`は実機から切断、
+`quit`はGDBの終了。PowerShellの`PS ...>`へ戻ったら`$LASTEXITCODE`を確認する。
+
+```gdb
+monitor ondisconnect cont
+detach
+quit
+```
 
 同じ確認をログへ保存する手順：PowerShell Aで
 `west debugserver -d $helloDebugBuild -r linkserver --probe HN2APUBRDCEPT`を起動し、
@@ -275,7 +306,9 @@ Get-Content -Encoding UTF8 "$learningRepo\stages\01_hello_world\scripts\debug.gd
 - 生成`zephyr/.config`：実際に有効になったKconfigの値。
 - 生成`zephyr/zephyr.dts`：ボードとSoC記述を展開したDevicetree。
 
-## 検証結果
+## Codexによる事前検証結果
+
+以下はCodexが実施した検証の記録で、ユーザー本人の実習完了を表さない。
 
 | 確認 | 実測結果 | 証跡 |
 |---|---|---|
@@ -302,14 +335,43 @@ UARTログは受信した生バイトを保持する。通常版の最終ログ�
 領域サイズは生成設定とリンカ出力による。SRAMX、IDT_LISTの使用量はどちらも0 B。
 デバッグ後は通常版を再度書き込み、リセット後の出力を確認して終了した。
 
-- [x] クリーンビルドと書き込みが成功する。
-- [x] リセット後にHello Worldを確認できる。
-- [x] mainで停止し、ステップ実行と変数／メモリ確認ができる。
-- [x] READMEに版、手順、期待動作、確認結果と未確認事項を記録した。
+事前検証で未確認：基板の印刷リビジョン、Tera TermのGUI表示、手で押したSW1の動作。
+CodexのUART確認はpyserial、リセットはMCU-Linkのリセット線操作で実施した。
 
-未確認：基板の印刷リビジョン、Tera TermのGUI表示、手で押したSW1の動作。
-今回のUART確認はpyserial、リセットはMCU-Linkのリセット線操作で実施した。
-ビルド・UART・ソースレベルデバッグの完了条件は実機で満たしている。
+## ユーザー本人の実習と完了条件
+
+現在、ユーザーからJ17への接続済みという報告、公式Hello Worldおよび段階フォルダのクリーンビルド成功のログ、COM5とMCU-Linkの列挙結果を受け取っている。
+詳細モードの書き込みログで成功表示と終了コード0を確認済み。リセット後の受信手順を案内し、Tera TermでZephyrの起動表示とHello Worldの受信結果を確認済み。デバッグ用ビルドと追加設定の反映、GDBでのmain停止、nextによる1行実行とUARTの追加出力、変数の値とメモリ確認は確認済み。stepでmainから戻る動作と関数内部へ入る動作、btで呼び出し関係、GDBの切断・終了と終了コード0も確認済み。
+以下は本人の結果を確認してからチェックする。
+
+- [x] 自分でクリーンビルドと書き込みを行い、成功を確認する。
+- [x] 自分でリセット後のHello WorldをUARTで確認する。
+- [x] 自分でmainに停止し、ステップ実行と変数／メモリ確認を行う。
+- [x] READMEの使用版・手順・期待動作・本人の実習結果と未確認事項の記録を、本人が確認する。
+
+実習結果は以下へ記録済み。2026-10-10の「段階1の確認はOK」との本人の回答をもって、最後の確認条件にもチェックした。
+ボードには現在デバッグ用ビルドが入っている。本人から段階1の変更のコミット・pushと、イシュー #2に紐づくPR作成の依頼を受けた。この変更はPRでソース・手順・実習記録を確認する対象とし、マージとイシュー #2のクローズは本人のPR確認後に行う。
+
+本人の実習結果は、実習日、実行したコマンド、UARTの出力、デバッグで観察した
+値や動作、疑問点と対処を記録する。
+
+| 実習日 | 本人が実施した操作 | 提供されたログで確認した結果 |
+|---|---|---|
+| 2026-10-10 | セッション設定と公式Hello Worldのクリーンビルド | Python 3.12.10、west 1.5.0、Zephyr 4.4.2、SDK 1.0.1、CPU0向け。`west build -p always -b frdm_mcxn947/mcxn947/cpu0 -d "$zephyrWorkspace\build\01_hello_world_official" samples/hello_world`の終了コード0。ELFとBINを生成。Flash 26,596 B、RAM 4,448 B。書き込み・実機出力はまだ未確認 |
+| 2026-10-10 | 学習リポジトリの段階1アプリのクリーンビルド | `west build -p always -b frdm_mcxn947/mcxn947/cpu0 -d $helloBuild "$learningRepo\stages\01_hello_world"`の終了コード0。`Application:`が段階フォルダを指すことを確認。ELF 720,796 B、BIN 26,596 Bを生成。Flash 26,596 B、RAM 4,448 B。書き込み・実機出力はまだ未確認 |
+| 2026-10-10 | UARTポートとデバッグプローブの列挙 | `Get-CimInstance Win32_SerialPort`でCOM5（MCU-Link VCom Port）、`LinkServer probes --no-boot`でMCU-LINK FRDM-MCXN947、CMSIS-DAP V3.128、シリアル`HN2APUBRDCEPT`を確認。`r0E7`はプローブの表示であり、基板の印刷リビジョンは引き続き未確認 |
+| 2026-10-10 | 通常モードで段階1アプリの書き込みコマンドを実行 | `west flash -d $helloBuild -r linkserver --probe HN2APUBRDCEPT`の終了コード0。補助処理の`UnicodeDecodeError`後もMCU-Linkの選択まで進んだ。runnerが詳細出力を非表示にするため、書き込み成功表示はログに含まれない。この時点では詳細モードとUARTの確認待ち |
+| 2026-10-10 | 詳細モードで段階1アプリの書き込み結果を確認 | `west -v flash -d $helloBuild -r linkserver --probe HN2APUBRDCEPT`の終了コード0。`zephyr.bin`を`0x10000000`へ26,596 Bロードし、`Finished writing Flash successfully.`を確認。`Sectors written: 0, unchanged: 4`は既存Flashの内容が同じため書き換えを省略した表示。UART出力はまだ未確認 |
+| 2026-10-10 | Tera TermでUART出力を確認 | ユーザー提供のTera Term表示で`*** Booting Zephyr OS build v4.4.2 ***`と`Hello World! frdm_mcxn947/mcxn947/cpu0`を確認。文字化けなく採用版とCPU0向けターゲット名を受信 |
+| 2026-10-10 | デバッグ用アプリのクリーンビルドと設定確認 | `west build -p always -b frdm_mcxn947/mcxn947/cpu0 -d $helloDebugBuild "$learningRepo\stages\01_hello_world" -- '-DEXTRA_CONF_FILE=debug.conf'`の終了コード0。最終`.config`の`CONFIG_DEBUG_OPTIMIZATIONS=y`と`CONFIG_DEBUG_THREAD_INFO=y`を確認。ELF 774,608 Bを生成。Flash 32,132 B、RAM 4,600 B。GDBでの実機デバッグはまだ未確認 |
+| 2026-10-10 | GDBを起動し実機へ接続 | `west debug -d $helloDebugBuild -r linkserver --probe HN2APUBRDCEPT`でGDB 16.2がCPU0へ接続。デバッグELFのロード量32,132 Bと`(gdb)`プロンプトを確認。ページ送り待ちを解除し、`set pagination off`を実行。ロード前の初回resetエラーは発生したが、その後のロードは完了。mainでの停止はまだ未確認 |
+| 2026-10-10 | mainにブレークポイントを設定して停止 | `break main`で`0x100013a6`、`src/main.c:11`にハードウェアブレークポイントを設定。`monitor reset`で`Processor connection reset`を確認し、`continue`後に`Thread 2 hit Breakpoint 1, main ()`で停止。printf実行前の11行目を確認 |
+| 2026-10-10 | ソース表示とnextによる1行実行 | `list`でmainのソースを表示。`next`で11行目のprintfを実行し、13行目の`return 0;`の直前に停止したことを確認。Tera TermにHello Worldの行が追加されたこともユーザー本人の報告で確認 |
+| 2026-10-10 | GDBでローカル変数とメインスレッドの優先度を確認 | `info locals`の`No locals.`はmainにローカル変数がないため正常。`print z_main_thread.base.prio`で`$1 = 0 '\000'`を確認し、優先度の値0を読み取った |
+| 2026-10-10 | GDBで構造体のアドレスとメモリを確認 | `print/x &z_main_thread`で`0x30000238`を確認。`x/8wx &z_main_thread`で先頭32 Bを読み取り、`0x30000238`と16 B先の`0x30000248`に4ワードずつ表示。8ワードは`0x30000498 0x30000498 0x00000000 0x00000001 0x00000080 0x00000000 0x00000000 0x00000000` |
+| 2026-10-10 | stepでmainから戻り呼び出し元を確認 | `step`で`main`のreturnから`bg_thread_main`の`kernel/init.c:351`へ戻った。`bt`の`#0 bg_thread_main`と`#1 z_thread_entry`で現在位置と呼び出し元を確認。停止行は`z_thread_essential_clear(&z_main_thread);` |
+| 2026-10-10 | stepで呼び出し先の関数内部へ入る | もう一度`step`を実行し、`z_thread_essential_clear`の`kernel/include/kthread.h:210`へ進んだ。引数`thread=0x30000238 <z_main_thread>`を確認。`bt`で`#0 z_thread_essential_clear`、`#1 bg_thread_main`、`#2 z_thread_entry`の呼び出し関係を確認 |
+| 2026-10-10 | CPUの再開設定とGDBの終了 | `monitor ondisconnect cont`、`detach`、`quit`を実行。`Ending remote debugging.`、CPU0からの切断、GDB serverの終了、PowerShellへの復帰を確認。`$LASTEXITCODE`は0。ボード上のプログラムはデバッグ用ビルドのまま |
 
 ## トラブルと対処
 
