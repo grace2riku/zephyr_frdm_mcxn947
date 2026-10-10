@@ -6,7 +6,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 ## 現在の状態
 
-学習計画と段階0の記録用フォルダを用意した初期状態です。環境構築、サンプル実装、実機検証はこれから行います。
+2026-10-10：段階0のPC環境調査とバージョン選定を完了しました。Windowsネイティブ、Zephyr v4.4.2、Zephyr SDK 1.0.1を採用します。[選定理由と環境調査結果](stages/00_versions/versions.md)を記録しています。環境構築、サンプル実装、実機検証は段階1以降で行います。
 
 ## 学習計画
 
@@ -30,7 +30,7 @@ zephyr_frdm_mcxn947/
 
 段階1以降のフォルダは、各イシューに着手するときに `stages/01_hello_world/`、`stages/02_led_control/` のように順次追加します。予定名はロードマップに記載しています。
 
-実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。依存関係の取得方法と固定方法は段階0〜1で決定します。
+実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。依存関係の取得・固定方針は段階0で決定し、段階1で取得結果と固定情報を記録します。
 
 ## 使用機材と基本方針
 
@@ -38,7 +38,7 @@ zephyr_frdm_mcxn947/
 - LCD：NXP LCD_PAR_S035 TFT LCD Module。
 - カメラ：DVP 20-pin OV7670 Camera Module。
 - 初期ターゲット：`frdm_mcxn947/mcxn947/cpu0`。
-- 開発ホスト：Windowsネイティブを基本とし、段階0で確定します。
+- 開発ホスト：Windows 11ネイティブ、PowerShell、VS Code（詳細は段階0の記録を参照）。
 - 各段階でビルド手順、期待する動作、実機確認結果を記録します。
 - 依存OSSを組み込む際は取得元とバージョンを記録し、ライセンス表示を保持します。
 
@@ -48,6 +48,6 @@ zephyr_frdm_mcxn947/
 - [Getting Started](https://docs.zephyrproject.org/latest/develop/getting_started/)
 - [LCD_PAR_S035](https://docs.zephyrproject.org/latest/boards/shields/lcd_par_s035/doc/index.html)
 - [DVP 20-pin OV7670](https://docs.zephyrproject.org/latest/boards/shields/dvp_20pin_ov7670/doc/index.html)
-- [Video capture](https://docs.zephyrproject.org/latest/samples/subsys/video/capture/README.html)
+- [Video capture（採用版v4.4.2のソース資料）](https://github.com/zephyrproject-rtos/zephyr/blob/v4.4.2/samples/drivers/video/capture/README.rst)
 - [Slint MCU環境構築](https://docs.slint.dev/latest/docs/cpp/mcu/generic/)
 - [Slint Zephyrデモ](https://github.com/slint-ui/slint/blob/master/demos/printerdemo/zephyr/README.md)
