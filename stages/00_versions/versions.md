@@ -2,7 +2,7 @@
 
 調査・選定日：2026-10-10（日本時間）。対象：[段階0・イシュー #1](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/1)。
 
-状態：段階0の選定・記録は完了。段階0時点では導入・ビルド・実機確認は未実施だった。段階1でCodexが環境構築とHello Worldのビルド・書き込み・UART・GDB確認を事前検証し、その後ユーザー本人からも各操作の成功結果を受け取った。[事前検証と本人の実習結果](../01_hello_world/README.md)を記録済み。2026-10-10にユーザー本人から「段階1の確認はOK」との確認を受けた。本人のPR確認後にマージとクローズを行う方針で、イシュー #2は開いたまま。本書の選定根拠、Codexの事前検証、ユーザー本人の実習結果を区別する。
+状態：段階0の選定・記録は完了。段階0時点では導入・ビルド・実機確認は未実施だった。段階1でCodexが環境構築とHello Worldのビルド・書き込み・UART・GDB確認を事前検証し、その後ユーザー本人からも各操作の成功結果を受け取った。[事前検証と本人の実習結果](../01_hello_world/README.md)を記録済み。2026-10-10にユーザー本人から「段階1の確認はOK」との確認を受け、その後、本人のPR確認と承認を経てPR #17をマージ、イシュー #2をcompletedとしてクローズ済み。本書の選定根拠、Codexの事前検証、ユーザー本人の実習結果を区別する。段階2もこの固定環境を継続する。
 
 ## 選定の結論
 
@@ -19,7 +19,7 @@ PATH、実行ファイルのバージョン、Windowsのインストール情報
 | OS | Windows 11 Pro 25H2、64ビット、ビルド26200.9457 | Windowsネイティブを採用。レジストリのProductNameはWindows 10 Proだったが、CIMのCaptionはWindows 11 Proだったため後者を使用 |
 | CPU／RAM | AMD Ryzen 9 7940HS、論理プロセッサ16、OSから見えるRAM約61.8 GiB | ホスト用ツールはWindows x86-64版。PCのRAMとボードのRAMは別 |
 | Cドライブ空き | 約712.3 GiB（調査時点） | SDKとワークスペースを追加する余裕がある |
-| PowerShell | 7.6.5 | 操作シェルに採用 |
+| PowerShell | Codexの作業用ランタイムは7.6.5。2026-10-11に本人の元の端末はWindows PowerShell 5.1（Build 26100、Revision 9444）と確認。その後、本人も7.6.5を起動し版を確認済み | 段階0の7.6.5という実測と本人の端末を区別する。7.6.5の実体は`C:\Users\grace\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe`。通常のProgram Filesの配置には見つからなかった。段階2で本人がこの実体を起動し、Major 7、Minor 6、Patch 5を確認した |
 | Git | 2.52.0.windows.1、実行確認済み | 既存版を使用 |
 | VS Code | 1.139.1、x64。CLIとアプリのpackage.jsonで確認 | 既存版を使用 |
 | VS Code拡張 | C/C++ 1.34.4。調査した拡張フォルダにCortex-Debugは見つからない | まずCLIのGDBを使い、GUI拡張は必要時に版・設定を記録 |

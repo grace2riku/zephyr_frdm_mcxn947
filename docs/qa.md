@@ -13,7 +13,7 @@ FRDM-MCXN947でZephyrを学ぶ過程で、ユーザーが質問し回答した�
 
 ## QA一覧
 
-| ID | 質問した段階 | 質問日時（JST、ターン開始時刻） | 質問のカテゴリ | 質問内容 | 回答 |
+| ID | 質問した段階 | 質問日時（JST、代替日時は注記） | 質問のカテゴリ | 質問内容 | 回答 |
 |---|---|---|---|---|---|
 | QA-001 | 段階0前：学習計画 | 2026-10-10 16:54:47 | 学習計画 | FRDM-MCXN947でZephyrを段階的に学ぶため、提示した課題より効率的な学習手順はありますか？ | 段階0〜15の計画を提案。Hello Worldの後にGPIO・LED点滅・スレッドとキュー・UART・NT-Shellを学び、メモリ操作をRAMと周辺レジスタに分ける。LCD・カメラ・Slintは単体で確認してから組み合わせる。各段階で動くコード、手順、期待動作、本人の確認結果を残す。詳細は[ロードマップ](roadmap.md)。 |
 | QA-002 | 段階0前：進め方 | 2026-10-10 17:12:53 | チャット運用 | 段階ごとにチャットを分けたほうがよいですか？ | このプロジェクトでは1段階＝1チャットを基本とし、同じ段階の途中は同じチャットを使う。全体計画の相談と段階ごとの実習を分け、引き継ぎにはイシューとリポジトリ内のREADME・記録を使う。 |
@@ -28,6 +28,10 @@ FRDM-MCXN947でZephyrを学ぶ過程で、ユーザーが質問し回答した�
 | QA-011 | 段階1／#2 | 2026-10-10 22:38:35 | ワークスペース・ボード対応 | Zephyrワークスペースには具体的に何が入っていますか？ Zephyrのソース、ツール、FRDM-MCXN947のコードなどでしょうか？ | `zephyr/`にカーネル・ドライバ・公式サンプル・ボード対応、`modules/`に外部ライブラリやNXPの制御コード、`bootloader/`にMCUboot、`tools/`に関連ツール、`.venv/`にPython環境、`.west/`にwest管理情報、`build/`に生成物、`downloads/`に取得した配布物がある。ボード対応は`zephyr/boards/nxp/frdm_mcxn947`、NXPのMCXN947対応は`modules/hal/nxp/mcux/mcux-sdk-ng/devices/MCX/MCXN/MCXN947`。SDKは別フォルダ。 [欄外のワークスペースのディレクトリ図](#qa-011-supplement)を参照。 |
 | QA-012 | 段階1／#2 | 2026-10-10 22:41:39 | 開発環境の全体像 | Zephyr SDK、ワークスペース、学習リポジトリ、開発環境の全体像を教えてください。 | 学習リポジトリは編集するアプリと記録、ワークスペースはZephyr本体・依存コードと今回配置した環境・生成物、SDKはGCC・リンカ・GDBなどの道具。VS Codeで編集し、PowerShellからwestを操作する。west buildはCMake・NinjaとSDKでELF・BINを生成。west flash/debugはLinkServerとMCU-Linkで実機を操作し、Tera TermはCOM5からUARTを受信する。env.ps1がPATH、Zephyr・SDKの場所、各パス変数を設定してこれらを結び付ける。[欄外の構成図と読み方](#qa-012-supplement)を参照。 |
 | QA-013 | 段階1／#2 | 2026-10-10 23:05:41 | Git・PR・イシュー管理 | 段階1の確認はOKだと思います。プルリクエストを作成し、イシューをクローズするのが一般的なプロセスですか？ | はい。本人の実習確認後、変更をコミット・pushし、PRで差分と確認結果をレビューしてからマージし、イシューをクローズする流れが適している。PRは変更を確認・取り込むため、イシューは学習課題の完了を追跡するために使う。PR本文に`Closes #2`と書き、既定ブランチへマージすると#2を自動クローズできる。PRを作成しただけでは閉じない。[GitHub公式資料](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)。質問時点で本人の確認OKを受け、PR作成・マージとクローズは未実施。 |
+| QA-014 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | CMake・相対パス | `target_sources(app PRIVATE src/main.c)`は学習リポジトリの`stages/02_led_control/src/main.c`を指しますか？ なぜその場所になるのですか？ | はい。`target_sources`の相対ソースパスは、CMakeが現在処理しているソースディレクトリ（`CMAKE_CURRENT_SOURCE_DIR`）を基準にする。今回の行は段階2のCMakeLists.txtにあるため、`stages/02_led_control`と`src/main.c`を組み合わせた場所になる。PowerShellの現在位置やビルド出力先を基準にしない。採用CMake 3.31.8の同梱公式Helpと、Codexの事前ビルドで生成されたbuild.ninjaのコンパイル対象で確認。[欄外のパスの具体例](#qa-014-supplement)。 |
+| QA-015 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | C言語・コンソール出力 | printfとprintkは何が違うの？ | `printf()`はC標準ライブラリの関数で、`<stdio.h>`を読み込み標準出力stdoutへ出力する。`printk()`はZephyrの確認・デバッグ用コンソール出力関数で、`<zephyr/sys/printk.h>`を読み込む。printfはint（成功時は出力文字数、エラー時は負値）、printkはvoid。今回の設定では両方とも同じUARTコンソールへつながる。GPIO APIの状態や戻り値を表示する目的でprintkを採用した。採用版では書式処理やサイズはCライブラリと設定に依存し、printkのほうが必ず小さいとは断定しない。[欄外の比較と実装確認](#qa-015-supplement)。 |
+| QA-016 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | 学習手順・Devicetree | 次は何を学びますか？ | 次はDevicetreeで使用LED・GPIO・極性を調べ、CコードのDT_ALIASとGPIO_DT_SPEC_GETに対応づける。共通定義のled0→red_led、gpio0のピン10・GPIO_ACTIVE_LOW、CPU0定義でのred_led・gpio0のokayを本人が表示して確認する。その後、GPIO準備状態・出力設定・論理値設定と戻り値を学び、本人のビルド・生成設定確認・書き込み・点灯／消灯へ進む。まずはボード定義の読み出しだけを案内し、本人の結果を待つ。[段階2の操作2](../stages/02_led_control/README.md#操作2：3つの入力ファイルを読む)。 |
+| QA-017 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | Devicetree・有効化 | 共通定義のdisabledをCPU0側でokayにしていますが、okayとは何を意味しますか？ | `status = "okay"`はDevicetreeのノードを使用対象として有効にする設定。`disabled`は明示的な無効化。CPU0側の設定で同じred_ledノードのstatusを上書きする。okayはLED点灯の命令や正常動作確認の結果ではない。GPIOドライバの使用にはKconfigなどの条件も必要で、実行時の初期化状態はgpio_is_ready_dt、実際の出力はgpio_pin_configure_dt／gpio_pin_set_dtで確認・設定する。[欄外の設定と実行時状態の区別](#qa-017-supplement)。 |
 
 ## 欄外の補足
 
@@ -202,6 +206,118 @@ flowchart TD
 1. **ビルド**：自分のアプリとZephyrのコード・ボード設定を入力にし、SDKのコンパイラとリンカで実行ファイルを作る。CMakeがビルド手順を生成し、Ninjaがその手順を実行する。
 2. **書き込みとデバッグ**：LinkServerがUSB接続のMCU-Linkを操作し、MCU-LinkがSWDというデバッグ用の接続でCPU0を操作する。GDBはELF内のソース位置・変数の情報を使い、LinkServerを通してブレークポイントやステップ実行、メモリ確認を行う。
 3. **表示の確認**：CPU0で実行した`printf`のUART出力は、MCU-Linkの仮想COMポートを通ってTera Termに届く。今回のCOMポートはCOM5。Tera Termは出力を読む役割で、ビルドや書き込みは行わない。
+
+<a id="qa-014-supplement"></a>
+
+### QA-014：CMakeの相対ソースパスの基準
+
+対象のCMakeLists.txtは次の場所にある。
+
+```text
+C:\Users\grace\Documents\ChatGPT\zephyr_frdm_mcxn947\stages\02_led_control\CMakeLists.txt
+```
+
+このファイルを処理しているときの`CMAKE_CURRENT_SOURCE_DIR`は、その親フォルダの
+`C:\Users\grace\Documents\ChatGPT\zephyr_frdm_mcxn947\stages\02_led_control`。
+`target_sources(app PRIVATE src/main.c)`の`src/main.c`は、この場所を基準に解釈される。
+
+```text
+基準：C:\Users\grace\Documents\ChatGPT\zephyr_frdm_mcxn947\stages\02_led_control
+相対指定：src/main.c
+対象：C:\Users\grace\Documents\ChatGPT\zephyr_frdm_mcxn947\stages\02_led_control\src\main.c
+```
+
+これから実行する`west build`では、最後の引数に段階2のアプリフォルダを指定する。
+westがそのフォルダをCMakeのソースディレクトリとして渡し、CMakeがそこでCMakeLists.txtを読む。
+PowerShellの現在位置がZephyr本体であっても、アプリのソースディレクトリは別に指定できる。
+`-d $ledBuild`で指定するビルド結果の保存先も、この相対ソースパスの基準とは別。
+
+`app`はソースを追加するビルド対象名。`PRIVATE`は、このソースをapp自身のビルドに使い、
+appに依存する他のビルド対象へソースとして引き継がせない指定。いずれもパスの基準を決めるものではない。
+
+採用CMake 3.31.8の同梱Help（`command/target_sources.rst`、`variable/CMAKE_CURRENT_SOURCE_DIR.rst`、
+`policy/CMP0076.rst`）を確認。対応する[公式説明](https://cmake.org/cmake/help/v3.31/command/target_sources.html)。
+Codexの事前ビルド先`build/02_led_control_codex/build.ninja`でも、このmain.cの絶対パスを
+コンパイル対象として確認した。この確認は本人のビルド結果としては扱わない。
+
+<a id="qa-015-supplement"></a>
+
+### QA-015：printfとprintkの比較
+
+| 項目 | printf | printk |
+|---|---|---|
+| 提供元 | C標準ライブラリ（libc） | Zephyr |
+| ヘッダ | `<stdio.h>` | `<zephyr/sys/printk.h>` |
+| 出力先の考え方 | 標準出力stdout | Zephyrのシステムコンソール |
+| 戻り値 | int。成功時は出力文字数、エラー時は負の値 | void。戻り値なし |
+| 今回の用途 | 段階1のHello Worldで使用 | 段階2のGPIO APIの状態・戻り値を表示 |
+
+```c
+/* printfには<stdio.h>、printkには<zephyr/sys/printk.h>が必要。 */
+printf("ret=%d\n", ret);
+printk("ret=%d\n", ret);
+```
+
+今回の構成なら、どちらも同じUARTコンソールへ表示できる。`ret`はGPIO APIが返した値であり、
+printkの戻り値ではない。表示するAPIを変えてもGPIOの論理値やLEDの極性は変わらない。
+
+Codexの段階2の事前ビルドで生成した`.config`では、`CONFIG_PICOLIBC=y`、
+`CONFIG_STDOUT_CONSOLE=y`、`CONFIG_PRINTK=y`、`CONFIG_UART_CONSOLE=y`を確認。
+`CONFIG_LOG`は無効。採用ソースの`drivers/console/uart_console.c`は、stdout側とprintk側に
+同じ`console_out`を登録する。`lib/libc/picolibc/stdio.c`はstdoutの出力先へ文字を渡す。
+`lib/os/printk.c`はprintkの出力先へ文字を渡し、今回のPicolibc構成では書式処理にvfprintfを使う。
+
+したがって「printkはいつも小さい」「printfは必ずバッファにためる」「printkでは特定の書式が
+一律に使えない」という固定的な区別をしない。書式の対応、同期、ログ経由などは設定に依存する。
+本人の今回の報告はソースの読み出し結果で、上の生成設定確認はCodexの事前検証を根拠としている。
+
+参照（採用コミットに固定）：
+
+- [printkの宣言](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/include/zephyr/sys/printk.h)
+- [printkの実装](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/lib/os/printk.c)
+- [UARTコンソールの出力先登録](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/drivers/console/uart_console.c)
+- [Picolibcの標準出力接続](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/lib/libc/picolibc/stdio.c)
+- [書式付き出力の説明](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/doc/services/formatted_output.rst)
+
+<a id="qa-017-supplement"></a>
+
+### QA-017：statusの有効化と実行時の状態
+
+Devicetreeのstatusは、ハードウェアを表すノードを使用対象として有効にするかを記述する。
+
+| 設定 | 意味 |
+|---|---|
+| `status = "okay"` | ノードを有効にする |
+| `status = "disabled"` | ノードを明示的に無効にする |
+| statusを省略 | Zephyrでは有効として扱う |
+
+今回の共通定義はred_ledのstatusをdisabledにし、CPU0用の定義は同じノードを参照して
+そのプロパティを上書きする。別の赤色LEDを追加する処理ではない。
+
+```dts
+&red_led {
+    status = "okay";
+};
+```
+
+これはCPU0向けの最終Devicetreeでred_ledを有効にする指定。電源投入後に実行されるCの命令ではない。
+
+| 確認／処理 | 確認するもの、変えるもの |
+|---|---|
+| Devicetreeのstatus | ビルドへ入力するノードの有効化設定 |
+| `gpio_is_ready_dt(&led)` | 実行時にgpio0デバイスの初期化が成功して使用可能か |
+| `gpio_pin_configure_dt(&led, GPIO_OUTPUT_INACTIVE)` | 実行時にピンを出力に設定し、初期状態を消灯へする |
+| `gpio_pin_set_dt(&led, 1)` | 実行時に論理1を指定し、今回のActive Lowの赤色LEDを点灯させる |
+
+ノードをokayにするだけで対応ドライバのコードが必ず組み込まれるわけではなく、Kconfigでの
+ドライバ有効化なども必要。今回のred_ledはGPIO情報の取得先として使い、gpio0のドライバを
+GPIO APIから操作する。GPIO情報の取得先が有効かをコンパイル時のDT_NODE_HAS_STATUSで確認し、
+GPIOデバイスの使用可能状態を実行時のgpio_is_ready_dtで確認する。
+
+okayは設定であり、LEDが実際に点灯したことや動作確認済みであることを表す値ではない。
+実機結果は本人の確認を受けて別に記録する。
+
+採用コミットの[Devicetreeのstatusの説明](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/doc/build/dts/intro-syntax-structure.rst)に照合済み。
 
 ## 関連する記録
 
