@@ -3,6 +3,15 @@
 対象：[イシュー #2](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/2)。
 前提：[段階0](../00_versions/README.md)。Codexの事前検証日：2026-10-10（日本時間）。
 
+## 学習に使用したAIモデル
+
+| 利用期間（JST） | AIツール | AIモデル（モデルID） | AIモデルバージョン | 推論設定 | 確認根拠 |
+|---|---|---|---|---|---|
+| 2026-10-10 | OpenAI Codex（デスクトップ） | `gpt-6.1-sol` | 6.1（モデルIDの表記）。固定スナップショットIDは未取得 | `high` | 2026-10-11に当該チャットの保存済み`turn_context.model`／`effort`を確認 |
+
+対応チャットID：`01a124f6-2775-7093-9042-521fdbc8fd05`。保存済み記録で確認できた範囲を記載した。
+[記録方法とモデル変更時の扱い](../../docs/ai-models.md)を参照。
+
 ## 目的と状態
 
 westによるビルド、MCU-Link経由の書き込み、UARTの受信、GDBのソースレベル
