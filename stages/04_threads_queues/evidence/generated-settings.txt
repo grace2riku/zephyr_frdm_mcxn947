@@ -1,0 +1,63 @@
+Codex build verification: 2026-10-11 JST
+Source: .tmp/build/04_threads_queues_codex/zephyr
+
+Kconfig
+CONFIG_MAIN_STACK_SIZE=2048
+CONFIG_SYS_CLOCK_TICKS_PER_SEC=10000
+CONFIG_NUM_PREEMPT_PRIORITIES=15
+CONFIG_GPIO=y
+CONFIG_MULTITHREADING=y
+CONFIG_MAIN_THREAD_PRIORITY=0
+CONFIG_HEAP_MEM_POOL_SIZE=0
+CONFIG_UART_CONSOLE=y
+CONFIG_GPIO_MCUX=y
+CONFIG_CBPRINTF_FULL_INTEGRAL=y
+CONFIG_PRINTK=y
+
+Memory configuration (map)
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x10000000         0x00200000         xr
+RAM              0x30000000         0x00050000         xw
+SRAMX            0x14000000         0x00018000         rw
+IDT_LIST         0xffff7fff         0x00008000         xw
+*default*        0x00000000         0xffffffff
+
+Stacks and message queue (map)
+ ._k_msgq.static.led_msgq_
+                0x30000178       0x28 app/libapp.a(main.c.obj)
+                0x30000178                led_msgq
+                0x300001a0                        _k_msgq_list_end = .
+noinit          0x30000548     0x2170
+ *(SORT_BY_ALIGNMENT(.noinit))
+ *(SORT_BY_ALIGNMENT(.noinit.*))
+ .noinit.CMAKE_SOURCE_DIR/src/main.c.2
+                0x30000548      0x800 app/libapp.a(main.c.obj)
+                0x30000548                command_stack
+ .noinit.CMAKE_SOURCE_DIR/src/main.c.1
+                0x30000d48      0x800 app/libapp.a(main.c.obj)
+                0x30000d48                led_stack
+
+GPIO0 (generated devicetree)
+			gpio0: gpio@96000 {
+				compatible = "nxp,kinetis-gpio"; /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:154 */
+				reg = < 0x96000 0x1000 >;        /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:156 */
+				interrupts = < 0x11 0x0 >,
+				             < 0x12 0x0 >;       /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:157 */
+				gpio-controller;                 /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:158 */
+				#gpio-cells = < 0x2 >;           /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:159 */
+				nxp,kinetis-port = < &porta >;   /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:160 */
+				status = "okay";                 /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:86 */
+				phandle = < 0x1f >;              /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:390 */
+			};
+
+Red LED (generated devicetree)
+		red_led: led_3 {
+			gpios = < &gpio0 0xa 0x1 >; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:44 */
+			label = "Red LED";          /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:45 */
+			status = "okay";            /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:94 */
+		};
+
+led0 alias
+		led0 = &red_led;                  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:15 */

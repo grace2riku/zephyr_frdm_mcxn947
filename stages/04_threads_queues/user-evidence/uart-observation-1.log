@@ -1,0 +1,118 @@
+LED uptime_ms=1060, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=1566, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=2072, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=2578, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=3084, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=3590, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+RX uptime_ms=4054, seq=3, cmd=START, value_ms=0
+STATE running=1, interval_ms=500, nominal_period_ms=1000, logical=0
+RX uptime_ms=4064, seq=4, cmd=SET_INTERVAL, value_ms=250
+STATE running=1, interval_ms=250, nominal_period_ms=500, logical=0
+LED uptime_ms=4325, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=4581, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=4837, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=5093, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=5349, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=5605, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=5861, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=6117, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=6373, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=6629, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=6886, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=7142, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=7398, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=7654, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=7910, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+RX uptime_ms=8075, seq=5, cmd=STOP, value_ms=0
+LED uptime_ms=8079, reason=STOP, set_ret=0, logical=0, expected=OFF
+STATE running=0, interval_ms=250, nominal_period_ms=500, logical=0
+RX uptime_ms=10091, seq=6, cmd=STOP, value_ms=0
+LED uptime_ms=10095, reason=STOP, set_ret=0, logical=0, expected=OFF
+STATE running=0, interval_ms=250, nominal_period_ms=500, logical=0
+RX uptime_ms=10107, seq=7, cmd=START, value_ms=0
+LED uptime_ms=10111, reason=START, set_ret=0, logical=1, expected=ON
+STATE running=1, interval_ms=250, nominal_period_ms=500, logical=1
+LED uptime_ms=10373, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=10629, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=10885, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=11142, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=11398, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=11654, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=11910, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=12166, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=12422, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=12678, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=12935, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=13191, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=13447, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=13703, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=13959, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+RX uptime_ms=14123, seq=8, cmd=STOP, value_ms=0
+LED uptime_ms=14127, reason=STOP, set_ret=0, logical=0, expected=OFF
+STATE running=0, interval_ms=250, nominal_period_ms=500, logical=0
+RX uptime_ms=16139, seq=9, cmd=SET_INTERVAL, value_ms=500
+STATE running=0, interval_ms=500, nominal_period_ms=1000, logical=0
+RX uptime_ms=16150, seq=10, cmd=START, value_ms=0
+LED uptime_ms=16154, reason=START, set_ret=0, logical=1, expected=ON
+STATE running=1, interval_ms=500, nominal_period_ms=1000, logical=1
+LED uptime_ms=16667, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=17173, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=17679, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=18185, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=18691, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=19197, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=19704, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+RX uptime_ms=20167, seq=11, cmd=START, value_ms=0
+STATE running=1, interval_ms=500, nominal_period_ms=1000, logical=0
+RX uptime_ms=20177, seq=12, cmd=SET_INTERVAL, value_ms=250
+STATE running=1, interval_ms=250, nominal_period_ms=500, logical=0
+LED uptime_ms=20438, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=20694, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=20950, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=21206, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=21463, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=21719, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=21975, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=22231, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=22487, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=22743, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=23000, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=23256, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=23512, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=23768, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=24024, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+RX uptime_ms=24188, seq=13, cmd=STOP, value_ms=0
+LED uptime_ms=24192, reason=STOP, set_ret=0, logical=0, expected=OFF
+STATE running=0, interval_ms=250, nominal_period_ms=500, logical=0
+RX uptime_ms=26204, seq=14, cmd=STOP, value_ms=0
+LED uptime_ms=26208, reason=STOP, set_ret=0, logical=0, expected=OFF
+STATE running=0, interval_ms=250, nominal_period_ms=500, logical=0
+RX uptime_ms=26220, seq=15, cmd=START, value_ms=0
+LED uptime_ms=26225, reason=START, set_ret=0, logical=1, expected=ON
+STATE running=1, interval_ms=250, nominal_period_ms=500, logical=1
+LED uptime_ms=26487, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=26743, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=26999, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=27255, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=27511, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=27768, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=28024, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=28280, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=28536, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=28792, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=29048, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=29305, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=29561, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=29817, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=30073, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+RX uptime_ms=30237, seq=16, cmd=STOP, value_ms=0
+LED uptime_ms=30241, reason=STOP, set_ret=0, logical=0, expected=OFF
+STATE running=0, interval_ms=250, nominal_period_ms=500, logical=0
+RX uptime_ms=32253, seq=17, cmd=SET_INTERVAL, value_ms=500
+STATE running=0, interval_ms=500, nominal_period_ms=1000, logical=0
+RX uptime_ms=32264, seq=18, cmd=START, value_ms=0
+LED uptime_ms=32268, reason=START, set_ret=0, logical=1, expected=ON
+STATE running=1, interval_ms=500, nominal_period_ms=1000, logical=1
+LED uptime_ms=32781, reason=TIMEOUT, set_ret=0, logical=0, expected=OFF
+LED uptime_ms=33287, reason=TIMEOUT, set_ret=0, logical=1, expected=ON
+LED uptime_ms=33793, reason=TIMEOUT, set_ret=0, logical=0, expected=OF

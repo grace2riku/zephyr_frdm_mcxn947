@@ -14,6 +14,10 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 ## 学習計画
 
+段階4（#5）に着手しました。本人の環境・Zephyrコミット確認、作業ブランチ作成、ソース・設定の表示確認とCPU0向けビルドまで完了。
+本人の書き込みも成功表示と終了コード0で確認済みです。Codexのビルド確認は別に記録しています。本人が最初の1巡のUARTと赤色LEDを確認し、低速→高速→消灯→高速再開→消灯の動作を報告しました。提供UARTの時刻差も比較済みです。続いて本人が3巡とも同じ動作を続け、UARTがseq 25まで進み、ERRORなし・set_retすべて0と報告しました。本人による役割分担・状態更新担当・待機・優先度・スタックの説明も確認済みです。READMEも本人が実際の学習・観察結果と一致すると確認し、PR作成を依頼しました。マージとイシュー #5のクローズはPR確認後の別途承認を待ちます。
+[段階4の手順と確認状況](stages/04_threads_queues/README.md)を参照してください。
+
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)
 - [学習に使用したAIモデルの記録方法](docs/ai-models.md)
@@ -22,6 +26,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 - [段階1：環境構築とHello World](stages/01_hello_world/README.md)
 - [段階2：GPIO APIでLEDを点灯・消灯する](stages/02_led_control/README.md)
 - [段階3：k_msleep()でLEDを周期的に点滅させる](stages/03_led_blink/README.md)
+- [段階4：スレッドとメッセージキューでLEDを制御する](stages/04_threads_queues/README.md)
 
 ## フォルダ構成
 
@@ -54,7 +59,14 @@ zephyr_frdm_mcxn947/
     │   ├── prj.conf
     │   ├── src/main.c
     │   └── evidence/
-    └── 03_led_blink/
+    ├── 03_led_blink/
+    │   ├── README.md
+    │   ├── CMakeLists.txt
+    │   ├── prj.conf
+    │   ├── src/main.c
+    │   ├── evidence/
+    │   └── user-evidence/
+    └── 04_threads_queues/
         ├── README.md
         ├── CMakeLists.txt
         ├── prj.conf
@@ -63,7 +75,7 @@ zephyr_frdm_mcxn947/
         └── user-evidence/
 ```
 
-段階4以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
+段階5以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
 
 実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。段階1で取得した有効67モジュールのSHAとPython依存の固定情報を段階0フォルダへ保存しました。
 
