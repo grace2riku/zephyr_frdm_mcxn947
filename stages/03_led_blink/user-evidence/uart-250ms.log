@@ -1,0 +1,29 @@
+*** Booting Zephyr OS build v4.4.2 ***
+Stage 3: LED blink
+GPIO device=gpio@96000, pin=10, dt_flags=0x1
+gpio_is_ready_dt: true
+gpio_pin_configure_dt: 0
+sleep_ms=250, nominal_period_ms=500
+uptime_ms=16, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=273, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=531, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=788, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=1045, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=1303, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=1560, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=1817, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=2075, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=2332, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=2589, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=2847, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=3104, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=3361, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=3618, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=3876, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=4133, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=4390, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=4648, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=4905, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=5162, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)
+uptime_ms=5420, gpio_pin_set_dt=0, logical=0, expected red LED=OFF (check the board)
+uptime_ms=5677, gpio_pin_set_dt=0, logical=1, expected red LED=ON (check the board)

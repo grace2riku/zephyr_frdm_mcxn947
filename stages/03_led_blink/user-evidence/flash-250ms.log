@@ -1,0 +1,122 @@
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> west -v flash -d $blinkBuild -r linkserver --probe HN2APUBRDCEPT
+-- west flash: rebuilding
+cmake version 3.31.8 is OK; minimum version is 3.13.1
+Running CMake: 'C:\Users\grace\zephyrproject-mcxn947\tools\cmake-3.31.8-windows-x86_64\bin\cmake.EXE' --build 'C:\Users\grace\zephyrproject-mcxn947\build\03_led_blink'
+ninja: no work to do.
+-- west flash: using runner linkserver
+RUNNER - gdb_port = 3333, semih port = 8888
+runners.linkserver: 'C:\nxp\LinkServer_1.4.85\Linkserver.exe' -v
+-- runners.linkserver: LinkServer: C:\nxp\LinkServer_1.4.85\Linkserver.exe, version v1.4.85
+runners.linkserver: LinkServer cmd:  + ['C:\\nxp\\LinkServer_1.4.85\\Linkserver.exe', 'flash', '--probe', 'HN2APUBRDCEPT', '-o', '/device/memory/1/flash-driver=MCXN9xx_S.cfx', '-o', '/device/memory/1/location=0x10000000', '-o', '/device/memory/-={"location":"0x30000000",                               "size":"0x00060000","type":"RAM"}', '-o', '/device/memory/-={"location":"0x30060000",                               "size":"0x00008000","type":"RAM"}', '-o', '/device/memory/-={"location":"0x50000000",                               "size":"0x00140000","type":"RAM"}', 'MCXN947:FRDM-MCXN947']
+runners.linkserver: 'C:\nxp\LinkServer_1.4.85\Linkserver.exe' -v
+runners.linkserver: flash command = ['C:\\nxp\\LinkServer_1.4.85\\Linkserver.exe', 'flash', '--probe', 'HN2APUBRDCEPT', '-o', '/device/memory/1/flash-driver=MCXN9xx_S.cfx', '-o', '/device/memory/1/location=0x10000000', '-o', '/device/memory/-={"location":"0x30000000",                               "size":"0x00060000","type":"RAM"}', '-o', '/device/memory/-={"location":"0x30060000",                               "size":"0x00008000","type":"RAM"}', '-o', '/device/memory/-={"location":"0x50000000",                               "size":"0x00140000","type":"RAM"}', 'MCXN947:FRDM-MCXN947', 'load', '--addr', '268435456', 'C:\\Users\\grace\\zephyrproject-mcxn947\\build\\03_led_blink\\zephyr\\zephyr.bin']
+runners.linkserver: 'C:\nxp\LinkServer_1.4.85\Linkserver.exe' flash --probe HN2APUBRDCEPT -o /device/memory/1/flash-driver=MCXN9xx_S.cfx -o /device/memory/1/location=0x10000000 -o '/device/memory/-={"location":"0x30000000",                               "size":"0x00060000","type":"RAM"}' -o '/device/memory/-={"location":"0x30060000",                               "size":"0x00008000","type":"RAM"}' -o '/device/memory/-={"location":"0x50000000",                               "size":"0x00140000","type":"RAM"}' MCXN947:FRDM-MCXN947 load --addr 268435456 'C:\Users\grace\zephyrproject-mcxn947\build\03_led_blink\zephyr\zephyr.bin'
+INFO: Exact match for MCXN947:FRDM-MCXN947 found
+INFO: Selected device MCXN947:FRDM-MCXN947
+ERROR: Failed to boot probes
+ERRMSG: UnicodeDecodeError: 'utf-8' codec can't decode byte 0x94 in position 21: invalid start byte
+INFO: Getting available probes
+INFO: Selecting probe by serial substring
+INFO: Selected probe #1 HN2APUBRDCEPT (MCU-LINK FRDM-MCXN947 (r0E7) CMSIS-DAP V3.128)
+INFO: MCU-Link firmware update check: local firmware [3.133] can be programmed on the selected probe ([HN2APUBRDCEPT] [MCU-LINK FRDM-MCXN947 (r0E7) CMSIS-DAP V3.128])
+Firmware update check: - the update can be performed using `auto` mode
+Ns: MCUXpresso IDE RedlinkMulti Driver v11.9 (Dec 11 2023 18:02:10 - crt_emu_cm_redlink.exe build 2)
+Pc: (  0) Reading remote configuration
+Wc(03). No cache support.
+Nc: Found chip XML file in C:\Users\grace\AppData\Local\Temp\tmpol6apj9z\MCXN947.xml
+Pc: (  5) Remote configuration complete
+Nc: Reconnected to existing LinkServer process.
+Nc: Probe Firmware: MCU-LINK FRDM-MCXN947 (r0E7) CMSIS-DAP V3.128 (NXP Semiconductors)
+Nc: Serial Number:  HN2APUBRDCEPT
+Nc: VID:PID:  1FC9:0143
+Nc: USB Path: 0001:0006:00
+Nc: Using memory from core 0 after searching for a good core
+Pc: ( 30) Emulator Connected
+Nc: processor is in secure mode
+Pc: ( 40) Debug Halt
+Pc: ( 50) CPU ID
+Nc: debug interface type      = CoreSight DP (DAP DP ID 6BA02477) over SWD TAP 0
+Nc: processor type            = Cortex-M33 (CPU ID 00000D21) on DAP AP 0
+Nc: number of h/w breakpoints = 8
+Nc: number of flash patches   = 0
+Nc: number of h/w watchpoints = 4
+Nc: Probe(0): Connected&Reset. DpID: 6BA02477. CpuID: 00000D21. Info: <None>
+Nc: Debug protocol: SWD. RTCK: Disabled. Vector catch: Disabled.
+Ns: Content of CoreSight Debug ROM(s):
+Nc: RBASE E00FE000: CID B105100D PID 0000095000 ROM (type 0x1)
+Nc: ROM 1 E00FF000: CID B105100D PID 04000BB4C9 ROM (type 0x1)
+Nc: ROM 2 E000E000: CID B105900D PID 04000BBD21 CSt ARM ARMv8-M type 0x0 Misc - Undefined
+Nc: ROM 2 E0001000: CID B105900D PID 04000BBD21 CSt ARM DWTv2 type 0x0 Misc - Undefined
+Nc: ROM 2 E0002000: CID B105900D PID 04000BBD21 CSt ARM FPBv2 type 0x0 Misc - Undefined
+Nc: ROM 2 E0000000: CID B105900D PID 04000BBD21 CSt ARM ITMv2 type 0x43 Trace Source - Bus
+Nc: ROM 2 E0041000: CID B105900D PID 04002BBD21 CSt ARM ETMv4.0 type 0x13 Trace Source - Core
+Nc: ROM 2 E0042000: CID B105900D PID 04000BBD21 CSt ARM CTIv2 type 0x14 Debug Control - Trigger, e.g. ECT
+Nc: ROM 1 E0040000: CID B105900D PID 04000BBD21 CSt type 0x11 Trace Sink - TPIU
+Nc: ROM 1 E0044000: CID B105900D PID 04003BB908 CSt CSTF type 0x12 Trace Link - Trace funnel/router
+Nc: ROM 1 E0045000: CID B105900D PID 04001BB961 CSt type 0x21 Trace Sink - ETB
+Nc: NXP: MCXN947
+Nc: DAP stride is 1024 bytes (256 words)
+Nc: Inspected v.2 On-chip Flash Memory MCXN9xx.cfx
+Nc: Image 'MCXNxxx Dec 12 2023 17:15:33'
+Nc: Opening flash driver MCXN9xx.cfx
+Nc: VECTRESET requested, but not supported on ARMv8-M CPUs. Using SOFTRESET instead.
+Nc: Using SOFT reset to run the flash driver
+Nc: Flash variant 'MCXNxxx (2048KB)' detected (2MB = 256*8K at 0x0)
+Nc: Closing flash driver MCXN9xx.cfx
+Nc: Inspected v.2 On-chip Flash Memory MCXN9xx_S.cfx
+Nc: Image 'MCXNxxx_S (Secure) Dec 12 2023 17:15:44'
+Nc: Opening flash driver MCXN9xx_S.cfx
+Nc: VECTRESET requested, but not supported on ARMv8-M CPUs. Using SOFTRESET instead.
+Nc: Using SOFT reset to run the flash driver
+Nc: Flash variant 'MCXNxxx (2048KB) (Secure)' detected (2MB = 256*8K at 0x10000000)
+Nc: Closing flash driver MCXN9xx_S.cfx
+Nc: Inspected v.2 On-chip Flash Memory MCXN9xx.cfx
+Nc: Image 'MCXNxxx Dec 12 2023 17:15:33'
+Nc: Opening flash driver MCXN9xx.cfx
+Nc: VECTRESET requested, but not supported on ARMv8-M CPUs. Using SOFTRESET instead.
+Nc: Using SOFT reset to run the flash driver
+Nc: Flash variant 'MCXNxxx (2048KB)' detected (2MB = 256*8K at 0x0)
+Nc: Closing flash driver MCXN9xx.cfx
+Nc: Inspected v.2 On-chip Flash Memory MCXN9xx_S.cfx
+Nc: Image 'MCXNxxx_S (Secure) Dec 12 2023 17:15:44'
+Nc: Opening flash driver MCXN9xx_S.cfx
+Nc: VECTRESET requested, but not supported on ARMv8-M CPUs. Using SOFTRESET instead.
+Nc: Using SOFT reset to run the flash driver
+Nc: Flash variant 'MCXNxxx (2048KB) (Secure)' detected (2MB = 256*8K at 0x10000000)
+Nc: Closing flash driver MCXN9xx_S.cfx
+Nc: Inspected v.2 External Flash Device on SPI using SFDP JEDEC ID MCXN9xx_SFDP_FlexSPI.cfx
+Nc: Image 'MCXN9xx_SFDP_FlexSPI Dec 12 2023 17:07:58'
+Nc: Opening flash driver MCXN9xx_SFDP_FlexSPI.cfx
+Nc: VECTRESET requested, but not supported on ARMv8-M CPUs. Using SOFTRESET instead.
+Nc: Using SOFT reset to run the flash driver
+Nc: Flash variant 'JEDEC_FlexSPI_Device' detected (8MB = 128*64K at 0x80000000)
+Nc: Closing flash driver MCXN9xx_SFDP_FlexSPI.cfx
+Nc: Inspected v.2 External Flash Device on SPI using SFDP JEDEC ID MCXN9xx_SFDP_FlexSPI_S.cfx
+Nc: Image 'MCXN9xx_SFDP_FlexSPI (Secure) Dec 12 2023 17:08:04'
+Nc: Opening flash driver MCXN9xx_SFDP_FlexSPI_S.cfx
+Nc: VECTRESET requested, but not supported on ARMv8-M CPUs. Using SOFTRESET instead.
+Nc: Using SOFT reset to run the flash driver
+Nc: Flash variant 'JEDEC_FlexSPI_Device' detected (8MB = 128*64K at 0x90000000)
+Nc: Closing flash driver MCXN9xx_SFDP_FlexSPI_S.cfx
+Pc: ( 65) Chip Setup Complete
+Pc: ( 70) License Check Complete
+Nt: Loading 'zephyr.bin' Binary 0x10000000 len 0x69C8
+Nc: Opening flash driver MCXN9xx_S.cfx
+Nc: VECTRESET requested, but not supported on ARMv8-M CPUs. Using SOFTRESET instead.
+Nc: Using SOFT reset to run the flash driver
+Nc: Flash variant 'MCXNxxx (2048KB) (Secure)' detected (2MB = 256*8K at 0x10000000)
+Pb: 1 of 1 (  0) Writing sectors 0-3 at 0x10000000 with 27080 bytes
+Ps: (  0) at 10000000: 0 bytes - 0/27080
+Ps: ( 30) at 10000000: 8192 bytes - 8192/27080
+Ps: ( 60) at 10002000: 8192 bytes - 16384/27080
+Ps: ( 90) at 10004000: 8192 bytes - 24576/27080
+Ps: (100) at 10006000: 8192 bytes - 32768/27080
+Nc: Sectors written: 4, unchanged: 0, total: 4
+Nc: Closing flash driver MCXN9xx_S.cfx
+Pb: (100) Finished writing Flash successfully.
+Nt: Loaded 0x69C8 bytes in 275ms (about 98kB/s)
+Nt: Reset target (system)
+Nc: Starting execution using system reset with a stall address
+Nc: Retask read watchpoint 1 at 0x50000040 to use for boot ROM stall
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> $LASTEXITCODE
+0

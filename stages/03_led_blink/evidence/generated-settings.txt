@@ -1,0 +1,50 @@
+CONFIG_SERIAL=y
+CONFIG_SYS_CLOCK_TICKS_PER_SEC=10000
+CONFIG_GPIO=y
+CONFIG_CONSOLE=y
+CONFIG_MULTITHREADING=y
+CONFIG_UART_CONSOLE=y
+CONFIG_GPIO_MCUX=y
+# CONFIG_LED is not set
+CONFIG_CBPRINTF_FULL_INTEGRAL=y
+CONFIG_PRINTK=y
+
+> .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:28:		led0 = &red_led;                  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:15 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:29:		led1 = &green_led;                /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:16 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:30:		led2 = &blue_led;                 /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:17 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:31:		sw0 = &user_button_2;             /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:18 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:32:		sw1 = &user_button_3;             /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:19 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:33:		sdhc0 = &usdhc0;                  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:20 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:34:		mcuboot-button0 = &user_button_2; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:21 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:35:		watchdog0 = &wwdt0;               /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:34 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:36:		pwm-0 = &flexpwm1_pwm0;           /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:35 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:37:		pwm-1 = &sc_timer;                /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:36 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:38:		rtc = &rtc;                       /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:37 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:39:	};
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:40:
+> .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:226:			gpio0: gpio@96000 {
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:227:				compatible = "nxp,kinetis-gpio"; /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:154 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:228:				reg = < 0x96000 0x1000 >;        /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:156 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:229:				interrupts = < 0x11 0x0 >,
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:230:				             < 0x12 0x0 >;       /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:157 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:231:				gpio-controller;                 /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:158 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:232:				#gpio-cells = < 0x2 >;           /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:159 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:233:				nxp,kinetis-port = < &porta >;   /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:160 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:234:				status = "okay";                 /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:86 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:235:				phandle = < 0x1f >;              /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:390 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:236:			};
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:237:
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:238:			/* node '/soc/peripheral@50000000/gpio@98000' defined in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:163 */
+> .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2359:		red_led: led_3 {
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2360:			gpios = < &gpio0 0xa 0x1 >; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:44 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2361:			label = "Red LED";          /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:45 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2362:			status = "okay";            /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:94 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2363:		};
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2364:	};
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2365:
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2366:	/* node '/gpio_keys' defined in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:50 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2367:	gpio_keys {
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2368:		compatible = "gpio-keys"; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:51 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2369:
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2370:		/* node '/gpio_keys/button_0' defined in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:53 */
+  .tmp\build\03_led_blink_codex\zephyr\zephyr.dts:2371:		user_button_2: button_0 {
