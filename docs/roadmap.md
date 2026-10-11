@@ -1,6 +1,6 @@
 # 学習ロードマップ
 
-段階0〜15をそれぞれ独立したイシューで管理します。2026-10-11時点で段階0のPC環境調査・選定・記録、段階1の本人によるビルド・書き込み・UART・GDB実習とPR確認、段階2の本人によるGPIOでのLED点灯・消灯、説明・記録・PR確認が完了しました。本人の承認後に[PR #17](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/17)と[PR #18](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/18)をマージし、#2・#3はcompletedとしてクローズ済みです。[段階1の実習結果](../stages/01_hello_world/README.md)、[段階2の実習結果](../stages/02_led_control/README.md)、[選定記録](../stages/00_versions/versions.md)を参照してください。段階3〜15は未着手です。
+段階0〜15をそれぞれ独立したイシューで管理します。2026-10-11時点で段階0のPC環境調査・選定・記録、段階1の本人によるビルド・書き込み・UART・GDB実習とPR確認、段階2の本人によるGPIOでのLED点灯・消灯、説明・記録・PR確認が完了しました。本人の承認後に[PR #17](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/17)と[PR #18](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/18)をマージし、#2・#3はcompletedとしてクローズ済みです。[段階1の実習結果](../stages/01_hello_world/README.md)、[段階2の実習結果](../stages/02_led_control/README.md)、[選定記録](../stages/00_versions/versions.md)を参照してください。段階3は本人の両版のビルド・書き込み・UART時刻差比較・LED点滅と速度変更・待機と周期の説明まで確認済みです。UARTとLEDの各状態の対応は500 ms版で確認し、250 ms版は速くて目視では断定できなかったと記録しています。最終版は250 ms。本人によるREADMEの確認も完了し、PR作成を承認済みです。マージとイシューのクローズは保留中です。[段階3の記録](../stages/03_led_blink/README.md)を参照してください。段階4〜15は未着手です。
 
 | 段階 | 課題 | 追加するフォルダ | 前提段階 | イシュー |
 |---|---|---|---|---|

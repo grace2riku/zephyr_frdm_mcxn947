@@ -6,9 +6,11 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 ## 現在の状態
 
-2026-10-11：段階0の選定・記録、段階1の本人によるビルド・書き込み・UART・GDB実習とPR確認、段階2の本人によるLED点灯・消灯の実習・説明・記録・PR確認が完了しました。本人の承認後に[PR #17](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/17)と[PR #18](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/18)をマージし、イシュー #2・#3はcompletedとしてクローズ済みです。[段階1の記録](stages/01_hello_world/README.md)と[段階2の記録](stages/02_led_control/README.md)を参照してください。ソース・実機の最終版は段階2の消灯版です。DTCは段階1の実物確認に基づき、段階0の計画を1.6.1の別導入へ訂正しました。
+2026-10-11：段階0の選定・記録、段階1の本人によるビルド・書き込み・UART・GDB実習とPR確認、段階2の本人によるLED点灯・消灯の実習・説明・記録・PR確認が完了しました。本人の承認後に[PR #17](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/17)と[PR #18](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/18)をマージし、イシュー #2・#3はcompletedとしてクローズ済みです。[段階1の記録](stages/01_hello_world/README.md)と[段階2の記録](stages/02_led_control/README.md)を参照してください。段階2終了時のソース・実機は消灯版です。DTCは段階1の実物確認に基づき、段階0の計画を1.6.1の別導入へ訂正しました。
 
 学習の主体はユーザー本人です。Codexは各操作の理由を日本語で説明し、手順の準備とトラブル対応を支援します。Codexの動作確認はユーザー本人の実習完了として扱いません。ユーザー本人が完了条件を満たしたことを確認し、クローズを依頼または許可した場合のみ、学習イシューをクローズします。
+
+段階3（#4）は本人の両版のビルド・書き込み、UART時刻差比較、赤色LED点滅・速度変更、待機と周期の説明まで確認済みです。UARTとLEDの各状態の対応は500 ms版で確認し、250 ms版は速くて目視では断定できなかったと記録しています。最終ソースとボードは250 ms版。Codexの両版ビルド確認は別に記録し、本人によるREADMEの確認も完了し、PR作成を承認済みです。マージとイシューのクローズは保留中です。[段階3の手順と確認状況](stages/03_led_blink/README.md)を参照してください。
 
 ## 学習計画
 
@@ -19,6 +21,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 - [段階0：バージョンと開発環境の方針](stages/00_versions/README.md)
 - [段階1：環境構築とHello World](stages/01_hello_world/README.md)
 - [段階2：GPIO APIでLEDを点灯・消灯する](stages/02_led_control/README.md)
+- [段階3：k_msleep()でLEDを周期的に点滅させる](stages/03_led_blink/README.md)
 
 ## フォルダ構成
 
@@ -45,15 +48,22 @@ zephyr_frdm_mcxn947/
     │   ├── src/main.c
     │   ├── scripts/
     │   └── evidence/
-    └── 02_led_control/
+    ├── 02_led_control/
+    │   ├── README.md
+    │   ├── CMakeLists.txt
+    │   ├── prj.conf
+    │   ├── src/main.c
+    │   └── evidence/
+    └── 03_led_blink/
         ├── README.md
         ├── CMakeLists.txt
         ├── prj.conf
         ├── src/main.c
-        └── evidence/
+        ├── evidence/
+        └── user-evidence/
 ```
 
-段階3以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
+段階4以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
 
 実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。段階1で取得した有効67モジュールのSHAとPython依存の固定情報を段階0フォルダへ保存しました。
 
