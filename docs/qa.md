@@ -32,6 +32,7 @@ FRDM-MCXN947でZephyrを学ぶ過程で、ユーザーが質問し回答した�
 | QA-015 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | C言語・コンソール出力 | printfとprintkは何が違うの？ | `printf()`はC標準ライブラリの関数で、`<stdio.h>`を読み込み標準出力stdoutへ出力する。`printk()`はZephyrの確認・デバッグ用コンソール出力関数で、`<zephyr/sys/printk.h>`を読み込む。printfはint（成功時は出力文字数、エラー時は負値）、printkはvoid。今回の設定では両方とも同じUARTコンソールへつながる。GPIO APIの状態や戻り値を表示する目的でprintkを採用した。採用版では書式処理やサイズはCライブラリと設定に依存し、printkのほうが必ず小さいとは断定しない。[欄外の比較と実装確認](#qa-015-supplement)。 |
 | QA-016 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | 学習手順・Devicetree | 次は何を学びますか？ | 次はDevicetreeで使用LED・GPIO・極性を調べ、CコードのDT_ALIASとGPIO_DT_SPEC_GETに対応づける。共通定義のled0→red_led、gpio0のピン10・GPIO_ACTIVE_LOW、CPU0定義でのred_led・gpio0のokayを本人が表示して確認する。その後、GPIO準備状態・出力設定・論理値設定と戻り値を学び、本人のビルド・生成設定確認・書き込み・点灯／消灯へ進む。まずはボード定義の読み出しだけを案内し、本人の結果を待つ。[段階2の操作2](../stages/02_led_control/README.md#操作2：3つの入力ファイルを読む)。 |
 | QA-017 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | Devicetree・有効化 | 共通定義のdisabledをCPU0側でokayにしていますが、okayとは何を意味しますか？ | `status = "okay"`はDevicetreeのノードを使用対象として有効にする設定。`disabled`は明示的な無効化。CPU0側の設定で同じred_ledノードのstatusを上書きする。okayはLED点灯の命令や正常動作確認の結果ではない。GPIOドライバの使用にはKconfigなどの条件も必要で、実行時の初期化状態はgpio_is_ready_dt、実際の出力はgpio_pin_configure_dt／gpio_pin_set_dtで確認・設定する。[欄外の設定と実行時状態の区別](#qa-017-supplement)。 |
+| QA-018 | 段階2／#3（完了後の補足） | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | Devicetree・ビルド生成物 | `zephyr.dts`は何から参照され、どこに作成され、どんな役割をもっていますか？ | `west build`のCMake設定処理で、選択したボードの.dtsと、それが読み込む.dtsi、指定があればoverlayを統合して生成する。今回は`$ledBuild/zephyr/zephyr.dts`。最終的なハードウェア設定を人が確認するための出力で、DTCも追加の警告・エラー検査に読む。Cコードが直接読むファイルではなく、同じ解析結果から生成したdevicetree_generated.hをZephyrのヘッダ経由で参照する。GPIO APIへ渡すポート・ピン・極性はコンパイル時に取り込まれる。変更は入力側へ行い、再ビルドする。[入力・生成・参照のつながり](#qa-018-supplement)。 |
 
 ## 欄外の補足
 
@@ -318,6 +319,60 @@ okayは設定であり、LEDが実際に点灯したことや動作確認済み�
 実機結果は本人の確認を受けて別に記録する。
 
 採用コミットの[Devicetreeのstatusの説明](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/doc/build/dts/intro-syntax-structure.rst)に照合済み。
+
+<a id="qa-018-supplement"></a>
+
+### QA-018：zephyr.dtsの入力・生成先・参照元
+
+`zephyr.dts`は、ビルド時に決まったDevicetreeを一つにまとめた生成ファイル。
+今回の生成先は`C:\Users\grace\zephyrproject-mcxn947\build\02_led_control\zephyr\zephyr.dts`。
+`west build`の`-d $ledBuild`で指定したビルド先の下に作成され、学習アプリのソースフォルダとは別に置かれる。
+
+今回の入力は、ボード指定`frdm_mcxn947/mcxn947/cpu0`で選ばれた
+`C:\Users\grace\zephyrproject-mcxn947\zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dts`と、
+そこから読み込むCPU0用・共通ボード・SoCなどの`.dtsi`。
+overlayを使う場合はその上書きも反映されるが、今回のアプリにはoverlayを追加していない。
+`prj.conf`はKconfigへの入力で、`zephyr.dts`へ直接統合する入力ではない。
+
+採用版4.4.2の実際の生成処理：
+
+```mermaid
+flowchart TD
+    A[ボード .dts / .dtsi / 必要なら overlay] --> B[前処理: zephyr.dts.pre]
+    Y[bindings: プロパティの意味を定める YAML] --> C[gen_edt.py による解析]
+    B --> C
+    C --> D[zephyr.dts: 統合後の設定を確認]
+    C --> E[edt.pickle: 解析結果]
+    E --> F[gen_defines.py]
+    F --> G[devicetree_generated.h: C用マクロ]
+    G --> H[Zephyrのヘッダ経由で main.c / ドライバをコンパイル]
+    D --> I[DTCによる追加の警告・エラー検査]
+```
+
+`zephyr.dts`とC用の生成ヘッダは、同じ解析結果から作られる。
+採用版では、生成済み`zephyr.dts`を読み直してヘッダを作る経路ではない。
+`cmake/modules/dts.cmake`がこの処理を実行し、DTCの検査出力自体は破棄する。
+
+C側は`<zephyr/devicetree.h>`などの通常のZephyrヘッダを経由して生成マクロを使う。
+アプリが`devicetree_generated.h`を直接includeする必要はない。
+今回の`main.c`は`<zephyr/drivers/gpio.h>`を読み込み、その依存ヘッダを経由してDevicetreeのAPIを使っている。
+
+```c
+#define LED_NODE DT_ALIAS(led0)
+static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NODE, gpios);
+```
+
+この記述は、ビルド時に決まった`led0 → red_led → gpio0・ピン10・GPIO_ACTIVE_LOW`の情報を
+`led`の初期値に取り込む。実行時にボードが`zephyr.dts`を開いて読む処理ではない。
+
+`zephyr.dts`の役割は、複数の入力の上書きを経た最終設定を確認し、設定の問題を調べること。
+たとえばred_ledの`status = "okay"`を見れば、共通定義のdisabledがCPU0用定義で上書きされたことを確認できる。
+ビルドで再生成されるため、設定変更は入力のoverlayなどへ行い、生成ファイルを直接編集しない。
+
+参照：採用コミットの[生成処理](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/cmake/modules/dts.cmake)、
+[gen_edt.py](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/scripts/dts/gen_edt.py)、
+[DevicetreeのC用ヘッダ](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/include/zephyr/devicetree.h)。
+公式の[入力・出力ファイルの説明](https://docs.zephyrproject.org/latest/build/dts/intro-input-output.html)も参照し、スクリプト間の分担はローカルの採用版ソースで照合した。
 
 ## 関連する記録
 
