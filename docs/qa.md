@@ -33,6 +33,7 @@ FRDM-MCXN947でZephyrを学ぶ過程で、ユーザーが質問し回答した�
 | QA-016 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | 学習手順・Devicetree | 次は何を学びますか？ | 次はDevicetreeで使用LED・GPIO・極性を調べ、CコードのDT_ALIASとGPIO_DT_SPEC_GETに対応づける。共通定義のled0→red_led、gpio0のピン10・GPIO_ACTIVE_LOW、CPU0定義でのred_led・gpio0のokayを本人が表示して確認する。その後、GPIO準備状態・出力設定・論理値設定と戻り値を学び、本人のビルド・生成設定確認・書き込み・点灯／消灯へ進む。まずはボード定義の読み出しだけを案内し、本人の結果を待つ。[段階2の操作2](../stages/02_led_control/README.md#操作2：3つの入力ファイルを読む)。 |
 | QA-017 | 段階2／#3 | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | Devicetree・有効化 | 共通定義のdisabledをCPU0側でokayにしていますが、okayとは何を意味しますか？ | `status = "okay"`はDevicetreeのノードを使用対象として有効にする設定。`disabled`は明示的な無効化。CPU0側の設定で同じred_ledノードのstatusを上書きする。okayはLED点灯の命令や正常動作確認の結果ではない。GPIOドライバの使用にはKconfigなどの条件も必要で、実行時の初期化状態はgpio_is_ready_dt、実際の出力はgpio_pin_configure_dt／gpio_pin_set_dtで確認・設定する。[欄外の設定と実行時状態の区別](#qa-017-supplement)。 |
 | QA-018 | 段階2／#3（完了後の補足） | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | Devicetree・ビルド生成物 | `zephyr.dts`は何から参照され、どこに作成され、どんな役割をもっていますか？ | `west build`のCMake設定処理で、選択したボードの.dtsと、それが読み込む.dtsi、指定があればoverlayを統合して生成する。今回は`$ledBuild/zephyr/zephyr.dts`。最終的なハードウェア設定を人が確認するための出力で、DTCも追加の警告・エラー検査に読む。Cコードが直接読むファイルではなく、同じ解析結果から生成したdevicetree_generated.hをZephyrのヘッダ経由で参照する。GPIO APIへ渡すポート・ピン・極性はコンパイル時に取り込まれる。変更は入力側へ行い、再ビルドする。[入力・生成・参照のつながり](#qa-018-supplement)。 |
+| QA-019 | 段階2／#3（完了後の補足） | 2026-10-11（受領日を代替記載。質問の正確な日時は不明） | Devicetree・overlayの判断 | overlayとは何ですか？ 使う／使わない判断と、今回不要と判断した理由は？ | overlayはボードのDevicetreeへアプリ用の設定を追加・上書きする入力ファイル。使いたいハードウェア構成と、対象ボードの最終Devicetreeのalias・有効化状態・GPIO／ピン・極性などを比べ、差分があればoverlayで調整する。既定設定で足りれば追加不要。今回はled0が赤色LEDを指し、CPU0用定義でred_ledとgpio0がokay、GPIO0のピン10・Active Lowも目的に一致し、GPIOドライバが出力・ピンmuxを設定するので追加のDevicetree設定は不要。Kconfigの機能選択はprj.conf、点灯・消灯の論理値はmain.cで扱う。[判断例と今回の根拠](#qa-019-supplement)。 |
 
 ## 欄外の補足
 
@@ -373,6 +374,59 @@ static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NODE, gpios);
 [gen_edt.py](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/scripts/dts/gen_edt.py)、
 [DevicetreeのC用ヘッダ](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/include/zephyr/devicetree.h)。
 公式の[入力・出力ファイルの説明](https://docs.zephyrproject.org/latest/build/dts/intro-input-output.html)も参照し、スクリプト間の分担はローカルの採用版ソースで照合した。
+
+<a id="qa-019-supplement"></a>
+
+### QA-019：overlayを使う場面と今回不要な理由
+
+overlayは、ボードの`.dts`／`.dtsi`を直接編集せずに、アプリに合わせてDevicetreeへ設定を追加・上書きする入力ファイル。
+拡張子は通常`.overlay`で、内容はDevicetreeの記述。ビルド時にボード定義の後へ適用され、最終`zephyr.dts`とC用生成ヘッダへ反映される。
+実行中に動的に設定を重ねる処理ではない。
+
+判断の基準は「このアプリで必要なハードウェア構成が、選んだボードの既定Devicetreeで表現されているか」。
+
+| やりたいこと・現状 | 設定する場所 |
+|---|---|
+| 既定のLEDが有効で、ピン・極性・aliasも目的に合っている | 追加overlayなしで既存の情報を使う |
+| 使いたい周辺機器が最終Devicetreeでdisabled | overlayで有効化し、必要なピン設定なども確認。ドライバのKconfigも別途確認 |
+| 外付けセンサーなど、使うデバイスのノードがない | overlayへ対応ノードと、接続先・アドレスなどを追加 |
+| Cコードを変えず、led0などのaliasの割り当てを変えたい | overlayでaliasを上書き |
+| GPIO APIやprintkなどのソフトウェア機能を組み込みたい | prj.confでKconfigを設定 |
+| 同じLEDを点灯から消灯へ変えたい | main.cの論理値を変更 |
+
+実際の回路・配線とアプリの要件を確認し、対象ボードで生成した`zephyr.dts`と比較する。
+変更するDevicetreeプロパティの意味・必要な項目は対応するbindingも確認する。
+`status = "okay"`だけで、必要なドライバの組み込みや配線条件まで満たすとは判断しない。
+
+今回の照合結果：
+
+| 必要な情報 | 既定のボード定義と本人の確認結果 |
+|---|---|
+| 操作するLED | `led0 = &red_led`で赤色LEDを参照できる |
+| LEDノードの有効化 | 共通定義ではdisabledだが、CPU0用定義でred_ledがokayになる |
+| GPIOデバイスの有効化 | CPU0用定義でgpio0がokayになる |
+| ピン・極性 | `gpios = <&gpio0 10 GPIO_ACTIVE_LOW>`がオンボード赤色LEDの制御に合っている |
+| 出力・ピンmuxの設定 | 採用版のMCUX GPIOドライバがgpio_pin_configure_dt経由で設定。LED用の追加pinctrl指定は不要 |
+| GPIOドライバ | prj.confでGPIOを要求し、本人の.configでGPIOとGPIO_MCUXがy |
+
+このため追加overlayなしで目的を満たせると判断した。生成設定の確認に続き、本人のUARTで準備状態trueと両APIの戻り値0、目視で点灯・消灯も確認済み。
+
+同じCコードの`DT_ALIAS(led0)`を維持したまま、led0を緑色LEDへ割り当てる場合のoverlayの記述例：
+
+```dts
+/ {
+    aliases {
+        led0 = &green_led;
+    };
+};
+```
+
+採用したCPU0用定義ではgreen_ledもすでにokay。これは設定変更の説明用であり、実際のサンプルには追加していない。
+元のCコードにある赤色LED向けの表示文は、緑色LEDへ変更するアプリでは合わせて更新する。
+
+参照：[公式のoverlayの使い方](https://docs.zephyrproject.org/latest/build/dts/howtos.html#set-devicetree-overlays)、
+採用コミットの[共通ボード定義](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/boards/nxp/frdm_mcxn947/frdm_mcxn947.dtsi)、
+[CPU0用定義](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/boards/nxp/frdm_mcxn947/frdm_mcxn947_mcxn947_cpu0.dtsi)。
 
 ## 関連する記録
 
