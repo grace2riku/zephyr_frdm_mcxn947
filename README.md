@@ -6,7 +6,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 ## 現在の状態
 
-2026-10-11：段階0の選定・記録は完了しました。段階1は本人のビルド・書き込み・UART・GDB実習とPR確認まで完了し、本人の承認後に[PR #17](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/17)をマージ、[イシュー #2](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/2)をcompletedとしてクローズしました。[段階1の日本語手順・事前検証・本人の実習結果](stages/01_hello_world/README.md)を参照してください。段階2は[LED制御アプリと手順](stages/02_led_control/README.md)を準備し、Codexの点灯版ビルド・生成設定確認が済んだ状態です。2026-10-11に本人のセッション設定・入力ファイル・ボード定義の読み出しと、点灯版のビルド成功（終了コード0）を確認しました。生成設定、点灯版の書き込み成功（終了コード0）、UARTのAPI成功結果と赤色LEDの点灯を本人の報告で確認済み。本人による消灯版へのソース変更、ビルド・書き込み成功（各終了コード0）、UARTのAPI成功結果と赤色LEDの消灯を確認済み。本人のGPIO・極性の説明と記録の相違なしの確認を受領済み。PRの確認待ちで、[#3](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/3)はopenです。DTCは段階1の実物確認に基づき、段階0の計画を1.6.1の別導入へ訂正しました。
+2026-10-11：段階0の選定・記録、段階1の本人によるビルド・書き込み・UART・GDB実習とPR確認、段階2の本人によるLED点灯・消灯の実習・説明・記録・PR確認が完了しました。本人の承認後に[PR #17](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/17)と[PR #18](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/18)をマージし、イシュー #2・#3はcompletedとしてクローズ済みです。[段階1の記録](stages/01_hello_world/README.md)と[段階2の記録](stages/02_led_control/README.md)を参照してください。ソース・実機の最終版は段階2の消灯版です。DTCは段階1の実物確認に基づき、段階0の計画を1.6.1の別導入へ訂正しました。
 
 学習の主体はユーザー本人です。Codexは各操作の理由を日本語で説明し、手順の準備とトラブル対応を支援します。Codexの動作確認はユーザー本人の実習完了として扱いません。ユーザー本人が完了条件を満たしたことを確認し、クローズを依頼または許可した場合のみ、学習イシューをクローズします。
 
@@ -14,6 +14,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)
+- [学習に使用したAIモデルの記録方法](docs/ai-models.md)
 - [学習イシュー](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues)
 - [段階0：バージョンと開発環境の方針](stages/00_versions/README.md)
 - [段階1：環境構築とHello World](stages/01_hello_world/README.md)
@@ -27,7 +28,8 @@ zephyr_frdm_mcxn947/
 ├── .gitignore
 ├── docs/
 │   ├── roadmap.md
-│   └── qa.md
+│   ├── qa.md
+│   └── ai-models.md
 └── stages/
     ├── 00_versions/
     │   ├── README.md
