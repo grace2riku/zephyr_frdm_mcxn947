@@ -1,0 +1,11 @@
+Ps: ( 85) at 10004000: 8192 bytes - 24576/28868
+Ps: (100) at 10006000: 8192 bytes - 32768/28868
+Nc: Sectors written: 4, unchanged: 0, total: 4
+Nc: Closing flash driver MCXN9xx_S.cfx
+Pb: (100) Finished writing Flash successfully.
+Nt: Loaded 0x70C4 bytes in 280ms (about 103kB/s)
+Nt: Reset target (system)
+Nc: Starting execution using system reset with a stall address
+Nc: Retask read watchpoint 1 at 0x50000040 to use for boot ROM stall
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> $LASTEXITCODE
+0

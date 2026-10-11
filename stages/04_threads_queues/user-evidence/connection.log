@@ -1,0 +1,10 @@
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> Get-CimInstance Win32_SerialPort | Select-Object DeviceID, Name
+
+DeviceID Name
+-------- ----
+COM5     MCU-Link VCom Port (COM5)
+
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> LinkServer probes --no-boot
+  #  Description                                    Serial
+---  ---------------------------------------------  -------------
+  1  MCU-LINK FRDM-MCXN947 (r0E7) CMSIS-DAP V3.128  HN2APUBRDCEPT
