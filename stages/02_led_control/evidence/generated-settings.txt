@@ -1,0 +1,51 @@
+Codex pre-build check only. 2026-10-10 JST. LED_STATE=1. No hardware verification.
+
+zephyr.dts (selected lines):
+		led0 = &red_led;                  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:15 */
+		led1 = &green_led;                /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:16 */
+		led2 = &blue_led;                 /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:17 */
+		sw0 = &user_button_2;             /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:18 */
+		sw1 = &user_button_3;             /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:19 */
+		sdhc0 = &usdhc0;                  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:20 */
+		mcuboot-button0 = &user_button_2; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:21 */
+		watchdog0 = &wwdt0;               /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:34 */
+		pwm-0 = &flexpwm1_pwm0;           /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:35 */
+		pwm-1 = &sc_timer;                /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:36 */
+		rtc = &rtc;                       /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:37 */
+	};
+
+			gpio0: gpio@96000 {
+				compatible = "nxp,kinetis-gpio"; /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:154 */
+				reg = < 0x96000 0x1000 >;        /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:156 */
+				interrupts = < 0x11 0x0 >,
+				             < 0x12 0x0 >;       /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:157 */
+				gpio-controller;                 /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:158 */
+				#gpio-cells = < 0x2 >;           /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:159 */
+				nxp,kinetis-port = < &porta >;   /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:160 */
+				status = "okay";                 /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:86 */
+				phandle = < 0x1f >;              /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:390 */
+			};
+
+			/* node '/soc/peripheral@50000000/gpio@98000' defined in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:163 */
+		red_led: led_3 {
+			gpios = < &gpio0 0xa 0x1 >; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:44 */
+			label = "Red LED";          /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:45 */
+			status = "okay";            /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:94 */
+		};
+	};
+
+	/* node '/gpio_keys' defined in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:50 */
+	gpio_keys {
+		compatible = "gpio-keys"; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:51 */
+
+		/* node '/gpio_keys/button_0' defined in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:53 */
+		user_button_2: button_0 {
+
+.config (selected lines):
+CONFIG_SERIAL=y
+CONFIG_GPIO=y
+CONFIG_CONSOLE=y
+CONFIG_UART_CONSOLE=y
+CONFIG_GPIO_MCUX=y
+# CONFIG_LED is not set
+CONFIG_PRINTK=y
