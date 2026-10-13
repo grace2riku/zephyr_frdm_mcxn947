@@ -18,6 +18,8 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 本人の書き込みも成功表示と終了コード0で確認済みです。Codexのビルド確認は別に記録しています。本人が最初の1巡のUARTと赤色LEDを確認し、低速→高速→消灯→高速再開→消灯の動作を報告しました。提供UARTの時刻差も比較済みです。続いて本人が3巡とも同じ動作を続け、UARTがseq 25まで進み、ERRORなし・set_retすべて0と報告しました。本人による役割分担・状態更新担当・待機・優先度・スタックの説明も確認済みです。READMEも本人が実際の学習・観察結果と一致すると確認し、PR作成を依頼しました。[PR #21](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/21)を作成し、本人によるPR内容の確認も完了しました。本人の別途の明示的な承認後、PR #21をマージし、イシュー #5をcompletedとしてクローズしました。段階4の学習は完了です。
 [段階4の手順と確認状況](stages/04_threads_queues/README.md)を参照してください。
 
+2026-10-12：段階5（#6）に着手しました。本人の環境・Zephyrコミット・UART定義・作業ブランチ確認と、UART取得、文字列送信、LEDスレッド、観察用待機・繰り返し、設定とCMakeの表示確認まで進みました。2026-10-13に本人のビルド抜粋と終了コード0を受領し、ビルド成功を確認しました。Codexの事前ビルド・生成設定確認は別に記録しています。本人のCMakeCache・Kconfig・UART・LED・GPIOの生成定義確認も完了し、COM5とプローブHN2APUBRDCEPTも再確認済みです。本人の書き込みもFlash成功表示と終了コード0で確認済みです。本人のTera Term設定も確認済みです。RESET後の起動表示とcycle 1〜3のHello World受信を確認し、本人はLEDの点滅も報告しました。本人が送信ループ中と待機中のLED点滅継続、文字がゆっくり増える様子も確認しました。本人の出力経路・文字列終端・改行・待機・共有UARTの説明と、ログ比較の補足説明後の理解報告も受領しました。本人のREADME確認も2026-10-14に完了しました。本人の依頼によりCodexがコミット・プッシュし、[PR #22](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/22)を作成しました。PRは本人の確認待ちで、マージとイシュー #6のクローズは未実施です。[段階5の手順と確認状況](stages/05_uart_tx/README.md)を参照してください。
+
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)
 - [学習に使用したAIモデルの記録方法](docs/ai-models.md)
@@ -27,6 +29,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 - [段階2：GPIO APIでLEDを点灯・消灯する](stages/02_led_control/README.md)
 - [段階3：k_msleep()でLEDを周期的に点滅させる](stages/03_led_blink/README.md)
 - [段階4：スレッドとメッセージキューでLEDを制御する](stages/04_threads_queues/README.md)
+- [段階5：UART APIでHello Worldを送信する](stages/05_uart_tx/README.md)
 
 ## フォルダ構成
 
@@ -66,7 +69,14 @@ zephyr_frdm_mcxn947/
     │   ├── src/main.c
     │   ├── evidence/
     │   └── user-evidence/
-    └── 04_threads_queues/
+    ├── 04_threads_queues/
+    │   ├── README.md
+    │   ├── CMakeLists.txt
+    │   ├── prj.conf
+    │   ├── src/main.c
+    │   ├── evidence/
+    │   └── user-evidence/
+    └── 05_uart_tx/
         ├── README.md
         ├── CMakeLists.txt
         ├── prj.conf
@@ -75,7 +85,7 @@ zephyr_frdm_mcxn947/
         └── user-evidence/
 ```
 
-段階5以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
+段階6以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
 
 実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。段階1で取得した有効67モジュールのSHAとPython依存の固定情報を段階0フォルダへ保存しました。
 

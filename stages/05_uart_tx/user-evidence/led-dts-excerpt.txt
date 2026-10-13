@@ -1,0 +1,16 @@
+本人の提示出力から値を抜粋。受領日：2026-10-13 JST。表示上の折り返しを整理した。実機観察の結果ではない。
+
+zephyr.dtsのgpio0（226〜236行）:
+gpio0: gpio@96000 {
+    compatible = "nxp,kinetis-gpio";
+    status = "okay";
+};
+
+zephyr.dtsのred_led（2359〜2363行）:
+red_led: led_3 {
+    gpios = < &gpio0 0xa 0x1 >;
+    label = "Red LED";
+    status = "okay";
+};
+
+上記は注目するプロパティだけの抜粋で、ノードの全文ではない。

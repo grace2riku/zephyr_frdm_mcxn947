@@ -1,0 +1,12 @@
+-- west build: building application
+[1/157] Generating include/generated/zephyr/version.h
+-- Zephyr version: 4.4.2 (C:/Users/grace/zephyrproject-mcxn947/zephyr), build: v4.4.2
+[157/157] Linking C executable zephyr\zephyr.elf
+Memory region         Used Size  Region Size  %age Used
+           FLASH:       27452 B         2 MB      1.31%
+             RAM:        7648 B       320 KB      2.33%
+           SRAMX:           0 B        96 KB      0.00%
+        IDT_LIST:           0 B        32 KB      0.00%
+Generating files from C:/Users/grace/zephyrproject-mcxn947/build/05_uart_tx/zephyr/zephyr.elf for board: frdm_mcxn947/mcxn947/cpu0
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> $LASTEXITCODE
+0

@@ -1,0 +1,15 @@
+*** Booting Zephyr OS build v4.4.2 ***
+Stage 5: UART polling transmit
+UART device=lpuart@b4000, ready=true
+GPIO device=gpio@96000, pin=10, ready=true
+gpio_pin_configure_dt=0, initial expected=OFF
+main priority=6, LED priority=5, interval_ms=250, LED requested_stack=2048 B
+[console] cycle=1, TX begin, char_wait_ms=100
+Hello World!
+[console] cycle=1, TX loop ended, gap_ms=2000
+[console] cycle=2, TX begin, char_wait_ms=100
+Hello World!
+[console] cycle=2, TX loop ended, gap_ms=2000
+[console] cycle=3, TX begin, char_wait_ms=100
+Hello World!
+[console] cycle=3, TX loop ended, gap_ms=2000
