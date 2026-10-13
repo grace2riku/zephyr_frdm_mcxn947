@@ -1,0 +1,53 @@
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> $uartDts = Join-Path $uartTxBuild 'zephyr\zephyr.dts'
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr>
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> Select-String -Path $uartDts `
+>>     -Pattern 'zephyr,console =','flexcomm4_lpuart4:' -Context 0,13
+
+> C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:20:           zephyr,console = &flexcomm4_lpuart4;
+  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:27 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:21:           zephyr,shell-uart = &flexcomm4_lpuart4;
+  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:28 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:22:           zephyr,canbus = &flexcan0;
+  /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:29 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:23:           zephyr,code-cpu1-partition = &slot1_partition
+; /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:30 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:24:   };
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:25:
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:26:   /* node '/aliases' defined in zephyr\dts\commo
+n\skeleton.dtsi:15 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:27:   aliases {
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:28:           led0 = &red_led;                  /* in zephy
+r\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:15 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:29:           led1 = &green_led;                /* in zephy
+r\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:16 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:30:           led2 = &blue_led;                 /* in zephy
+r\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:17 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:31:           sw0 = &user_button_2;             /* in zephy
+r\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:18 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:32:           sw1 = &user_button_3;             /* in zephy
+r\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:19 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:33:           sdhc0 = &usdhc0;                  /* in zephy
+r\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:20 */
+> C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:593:                          flexcomm4_lpuart4: lpuart@b4000 {
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:594:                                  compatible = "nxp,lpuart";
+ /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:467 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:595:                                  reg = < 0xb4000 0x1000 >;
+ /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:468 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:596:                                  clocks = < &syscon 0x104 >;
+ /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:469 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:597:                                  dmas = < &edma0 0x2 0x4d >,
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:598:                                         < &edma0 0x3 0x4e >;
+ /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:471 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:599:                                  dma-names = "rx",
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:600:                                              "tx";
+ /* in zephyr\dts\arm\nxp\mcx\nxp_mcxnx4x_common.dtsi:472 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:601:                                  current-speed = < 0x1c200 >;
+ /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:208 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:602:                                  pinctrl-0 = < &pinmux_flexcomm4_lpuart >;
+ /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:209 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:603:                                  pinctrl-names = "default";
+ /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947.dtsi:210 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:604:                                  status = "okay";
+ /* in zephyr\boards\nxp\frdm_mcxn947\frdm_mcxn947_mcxn947_cpu0.dtsi:147 */
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:605:                          };
+  C:\Users\grace\zephyrproject-mcxn947\build\05_uart_tx\zephyr\zephyr.dts:606:
