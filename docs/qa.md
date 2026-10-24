@@ -445,6 +445,150 @@ overlayは、ボードの`.dts`／`.dtsi`を直接編集せずに、アプリに
 採用コミットの[共通ボード定義](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/boards/nxp/frdm_mcxn947/frdm_mcxn947.dtsi)、
 [CPU0用定義](https://github.com/zephyrproject-rtos/zephyr/blob/dccb09599635bdff17633fa7e9dab014b91dce90/boards/nxp/frdm_mcxn947/frdm_mcxn947_mcxn947_cpu0.dtsi)。
 
+## 段階6の開始時の説明
+
+| ID | 質問した段階 | 質問日時（JST、代替日時は注記） | 質問のカテゴリ | 質問内容 | 回答 |
+|---|---|---|---|---|---|
+| QA-037 | 段階6／#7 | 2026-10-14（引き継ぎ依頼の受領日。正確な質問日時は不明） | UART受信API・ISR | 採用版でuart_poll_inの戻り値と入力なし時の動作、割り込みコールバックの実行場所、ISRとスレッドの役割を説明してください。 | uart_poll_inは非ブロッキングで、1バイトを保存できれば0、入力が空なら-1。成功時だけ保存先を使う。採用MCUX LPUART実装はフラグを1回確認する。空のときのk_msleep(1)はアプリ側の待機。割り込みコールバックはドライバISRから呼ばれるためISRの文脈で動く。FIFO読出し、上限・改行判定、K_NO_WAITのキュー投入を短く行い、待ち付きのキュー受取りとUART出力はスレッド側へ置く。採用コミットのローカルソースによる説明であり、本人の理解・実機結果の確認ではない。[段階6の準備記録](../stages/06_uart_echo/README.md)。 |
+
+## 段階6：割り込み受信の図解
+
+| ID | 質問した段階 | 質問日時（JST、代替日時は注記） | 質問のカテゴリ | 質問内容 | 回答 |
+|---|---|---|---|---|---|
+| QA-038 | 段階6／#7 | 2026-10-24（質問受領日。正確な送信日時は未取得） | UART割り込み・ISR・メッセージキュー | 割り込み版の動作メカニズムが分からないので、ISR側でキューの空きを待たない理由を図解で教えてください。 | CPU0は1個で、ISRは実行中のスレッドへ割り込んで動く。UARTから読んだ文字をISR内で行へ組み立て、完成した行を待たずにキューへコピーして戻る。ISR終了後にmainが行を取り出して送信する。ISRがキューの空きを待って回り続けると、空きを作るmainが動けず進まない。Zephyrの採用実装でもISRからのk_msgq_putはK_NO_WAITだけを許す。今回は満杯なら新しい完成行を捨て、mainが後で通知する。[以下の図と具体例](#qa-038-supplement)を参照。説明後の本人の理解確認はまだ行っていない。 |
+
+<a id="qa-038-supplement"></a>
+
+CPU0は1個で、mainとLEDスレッドはCPU時間を分けて動く。ISR（割り込み処理）は別スレッドではなく、
+実行中のスレッドを一時中断して優先的に行う処理。UART回路とRAMのキュー自体がCの処理を実行するわけではない。
+
+次の図は、abcと改行を受け取る複数回の割り込みをまとめて示している。
+
+```mermaid
+sequenceDiagram
+    participant P as PC
+    participant U as UART回路
+    participant C as CPU0
+    participant Q as RAMのキュー
+    Note over C: mainは行待ち<br/>LEDは点滅して待機
+    P->>U: abc と改行を送る
+    U-->>C: 受信割り込み
+    Note over C: スレッドを一時中断しISRを実行
+    C->>U: ISRが到着した文字を読む
+    C->>Q: ISRが完成した行をコピー
+    Note over C: ISR終了・スレッド実行へ戻る
+    C->>Q: mainが1行取り出す
+    C->>U: mainがEcho: abcを送る
+    U-->>P: Echo: abc
+```
+
+改行前はISRが本文を蓄積するだけで、まだキューへ完成行を渡さない。
+改行が届いたら`k_msgq_put(..., K_NO_WAIT)`でコピーし、ISRは終了する。
+mainの`k_msgq_get(..., K_FOREVER)`は行がない間mainを待ち状態にし、受信した行を送信できる状態になるとmainを実行可能にする。
+mainが待っている間、LEDスレッドが実行可能なら動ける。両方が待ち状態ならCPUはアイドルにも入れる。
+割り込みで起こされたmainが、そのISRの途中で実行を始めるわけではない。
+
+キューが10行で満杯のとき、ISR内で「空くまで回り続ける」処理を書いたと仮定すると、次の循環になる。
+
+```mermaid
+flowchart TD
+    A["ISRがキューの空きを待って回り続ける"] --> B["ISRが終了しない"]
+    B --> C["CPU0でmainが動けない"]
+    C --> D["mainが行を取り出せず空きができない"]
+    D --> A
+```
+
+これは待ち続ける処理が不適切な理由の説明であり、ISRで待機APIを使う実装例ではない。
+採用Zephyrの`kernel/msg_q.c`のput_msg_in_queueでは、ISRからの呼出しにK_NO_WAITを要求するassert条件を確認した。
+実際のアプリは「入るなら投入、満杯なら新しい完成行を捨てて戻る」とし、mainが再開してから通知する。
+捨てる単位は今回完成した1行であり、すでにキューにある10行は残す。
+
+今回の001〜100が全部返った理由は、mainも途中で行を取り出して送信するため。
+キュー10件は同時に溜めておける上限であり、合計10行しか処理できない意味でも、10行揃うまで待つ意味でもない。
+今回の試験では満杯通知や欠番は観測されず、キュー満杯経路の実機確認は未実施として区別する。
+PC側の送信間隔や最大キュー占有数は測定していないため、満杯にならなかった細かい時間条件は断定しない。
+
+## 段階6：実際の関数名・変数名で見る受信経路
+
+| ID | 質問した段階 | 質問日時（JST、代替日時は注記） | 質問のカテゴリ | 質問内容 | 回答 |
+|---|---|---|---|---|---|
+| QA-039 | 段階6／#7 | 2026-10-24（質問受領日。正確な送信日時は未取得） | UART割り込み・ソース読解 | 提示した図を、ソースコードの実際の名称でもう一歩具体的に説明してください。 | irq_line.cのmainがserial_cbを登録し、UART割り込みを有効にする。ISR文脈のserial_cbはuart_fifo_readでcへ読み、receive_byte(c)を呼ぶ。receive_byteがrx_line.textとrx_lenを更新し、改行でrx_lineをrx_queueへコピーする。mainはk_msgq_getで自分のmessageへ受け取り、send_message、uart_send_string、uart_poll_outの順で送信する。rx_lineとmainのmessageは別の構造体。満杯時はqueue_overflowを立ててISRから戻り、mainが後で通知する。[以下の図・abcの具体例](#qa-039-supplement)を参照。 |
+
+<a id="qa-039-supplement"></a>
+
+対象：[割り込み版のソース](../stages/06_uart_echo/src/irq_line.c)。図は正常な本文・改行の経路を中心に示す。
+serial_cbはmainからUARTドライバへ登録するコールバック。受信ごとにmainが直接呼ぶ関数ではない。
+
+```c
+uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+uart_irq_rx_enable(uart_dev);
+uart_irq_err_enable(uart_dev);
+```
+
+受信割り込みが来ると、採用ドライバのISRからserial_cbが呼ばれる。
+serial_cbから呼ぶreceive_byteとrecord_rx_errorsも、その呼出し中はISR文脈で実行される。
+
+```mermaid
+flowchart TD
+    A["UART受信割り込み"] --> B["serial_cb(dev, user_data)"]
+    B --> C["uart_fifo_read(dev, &c, 1)<br/>cへ1バイトを読む"]
+    C --> D["receive_byte(c)"]
+    D -->|"本文"| E["rx_line.text[rx_len++]へ格納"]
+    D -->|"CRまたはLF"| F["rx_line.textをNUL終端"]
+    F --> G["k_msgq_put(&rx_queue, &rx_line, K_NO_WAIT)"]
+    E --> H["次の到着済みバイトを読む<br/>FIFOが空ならserial_cbから戻る"]
+    G --> H
+```
+
+実際のserial_cbはこの読出し前にuart_irq_update、record_rx_errors、uart_irq_rx_readyを呼ぶ。
+whileでFIFOが空になるまで読むため、割り込み1回で複数バイトを読む場合もある。
+CR直後のLFはprevious_was_crの判定で無視し、完成行を二重に投入しない。
+
+最初の正常行としてabcとCRLFを受信する例：
+
+| c | receive_byte(c)の主な処理 | 処理後のrx_len |
+|---|---|---:|
+| a | rx_line.text[0]へaを格納 | 1 |
+| b | rx_line.text[1]へbを格納 | 2 |
+| c | rx_line.text[2]へcを格納 | 3 |
+| CR | rx_line.text[3]をNUL終端し、rx_lineをrx_queueへコピー。長さと状態を初期化 | 0 |
+| LF | previous_was_crがtrueなのでreturn。2件目を投入しない | 0 |
+
+行終端で配列全体を消す処理はしていない。長さと結果・UARTエラーフラグを初期化し、次の本文で上書きする。
+キューへはstruct line_messageの内容がコピーされるため、その後rx_lineを更新しても渡した行は変わらない。
+
+```mermaid
+flowchart TD
+    Q["rx_queue<br/>struct line_messageを最大10件保持"] --> G["mainのk_msgq_get<br/>messageへ1件受け取る"]
+    G --> S["send_message(&message)"]
+    S --> U["uart_send_string<br/>Echo:・本文・CRLFを順に送る"]
+    U --> O["uart_poll_out(uart_dev, ...)<br/>1バイトずつ送信"]
+    O --> P["PCにEcho: abcを表示"]
+```
+
+mainの実際の受取りは`k_msgq_get(&rx_queue, &message, K_FOREVER)`。
+キューが空ならmainだけが待ち状態になる。受取り後、send_message(&message)へ進む。
+mainがすでに受取り待ちなら、カーネルはメッセージを待ち先のmessageへ直接コピーして起こすこともある。
+図はメッセージキューAPIを介した受渡しを示し、必ずキューの内部バッファに一度溜まるという意味ではない。
+
+| 名前 | 内容と担当 |
+|---|---|
+| serial_cb内のc | UARTから読んだ1バイト |
+| rx_line | ISR側の組立て用struct line_message。text・result・uart_errorsを持つ |
+| rx_len | ISR側で本文を何バイト蓄積したか |
+| rx_queue | 完成したメッセージを受け渡すキュー |
+| main内のmessage | mainが受け取る別のstruct line_message |
+| send_message内のmessage | mainから渡された構造体へのポインタ。message->textで本文を読む |
+
+キュー満杯ではreceive_byteのk_msgq_putが失敗し、atomic_set(&queue_overflow, 1)を行う。
+その行は捨ててserial_cbから戻り、mainが再び動けるようにする。
+mainは行を受け取った後、atomic_clear(&queue_overflow)の戻り値で通知の有無を確認し、エラー表示する。
+receive_byteが空くまで回り続けるとserial_cbが戻れず、空きを作るmainのk_msgq_getも進めない。
+そのためISR側はK_NO_WAITで投入する。これは前の一般図を実際の関数名へ対応づけた説明である。
+
+led_entryはk_thread_createで作る別スレッドで、gpio_pin_set_dtとk_msleep(250)を繰り返す。
+serial_cbが戻り、LEDスレッドが実行可能なら点滅処理が動く。LED側はUARTへ送信しない。
+
 ## 関連する記録
 
 - [学習ロードマップ](roadmap.md)
