@@ -24,6 +24,8 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 2026-10-31：段階7（#8）は完了しました。本人がビルド・書き込み、NT-Shellの起動・help・LED操作と入力待ち中の点滅継続、不正入力・編集・履歴・取消し・CR／LF／CR+LF、READMEとPRを確認しました。本人の明示的な承認後に[PR #25](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/25)をマージし、イシュー #8の全10チェック項目を完了へ更新してcompletedとしてクローズしました。ローカルmainも同期済みです。最終状態はLED消灯、送信CR+LF・受信CR。未実施の追加ケースは区別して[段階7の記録](stages/07_ntshell/README.md)に残しています。
 
+2026-10-31：段階8（#9）は、本人の環境・ソース・設定確認、CPU0向けビルド・書き込み、8／16／32 bitのRAM読み書き・ダンプ、境界・不正入力の拒否、RESET初期化とGDB照合まで進みました。Flash 34,200 B・RAM 10,992 B。GDB切断・終了は終了コード0ですが、その直後のUARTは無応答となり、本人のRESETで復旧しました。原因は未確定として記録しています。最終状態はLED消灯・RAM初期パターン・GDB終了済み。2026-11-01に本人がREADMEと実習内容の一致を確認し、PR作成を依頼しました。PR作成を進め、本人のPR確認・マージ・イシュー完了はこれからです。[段階8の手順と確認状況](stages/08_memory_ram/README.md)を参照してください。
+
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)
 - [学習に使用したAIモデルの記録方法](docs/ai-models.md)
@@ -36,6 +38,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 - [段階5：UART APIでHello Worldを送信する](stages/05_uart_tx/README.md)
 - [段階6：UARTのポーリング受信と割り込み受信でエコーを実装する](stages/06_uart_echo/README.md)
 - [段階7：NT-ShellでLEDをコマンド操作する](stages/07_ntshell/README.md)
+- [段階8：NT-Shellで専用RAMを読み書き・ダンプする](stages/08_memory_ram/README.md)
 
 ## フォルダ構成
 
@@ -98,7 +101,17 @@ zephyr_frdm_mcxn947/
     │   ├── src/poll_line.c
     │   ├── src/irq_line.c
     │   └── evidence/
-    └── 07_ntshell/
+    ├── 07_ntshell/
+    │   ├── README.md
+    │   ├── UPSTREAM.md
+    │   ├── CMakeLists.txt
+    │   ├── prj.conf
+    │   ├── src/
+    │   ├── third_party/ntshell/
+    │   ├── scripts/
+    │   ├── tests/commands/
+    │   └── evidence/
+    └── 08_memory_ram/
         ├── README.md
         ├── UPSTREAM.md
         ├── CMakeLists.txt
@@ -107,10 +120,11 @@ zephyr_frdm_mcxn947/
         ├── third_party/ntshell/
         ├── scripts/
         ├── tests/commands/
-        └── evidence/
+        ├── evidence/
+        └── user-evidence/
 ```
 
-段階7のフォルダを追加しました。段階8以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
+段階8のフォルダを追加しました。段階9以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
 
 実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。段階1で取得した有効67モジュールのSHAとPython依存の固定情報を段階0フォルダへ保存しました。
 

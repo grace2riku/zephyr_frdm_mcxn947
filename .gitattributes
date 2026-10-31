@@ -7,3 +7,8 @@ stages/07_ntshell/third_party/ntshell/core/* -text -whitespace
 stages/07_ntshell/third_party/ntshell/util/* -text -whitespace
 stages/07_ntshell/evidence/*.log -text -whitespace
 stages/07_ntshell/user-evidence/*.log -text -whitespace
+# 段階8も公式配布物とログのバイト列を保持する。
+stages/08_memory_ram/third_party/ntshell/core/* -text -whitespace
+stages/08_memory_ram/third_party/ntshell/util/* -text -whitespace
+stages/08_memory_ram/evidence/*.log -text -whitespace
+stages/08_memory_ram/user-evidence/*.log -text -whitespace
