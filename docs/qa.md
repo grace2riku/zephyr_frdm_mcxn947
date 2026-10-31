@@ -589,6 +589,290 @@ receive_byteが空くまで回り続けるとserial_cbが戻れず、空きを�
 led_entryはk_thread_createで作る別スレッドで、gpio_pin_set_dtとk_msleep(250)を繰り返す。
 serial_cbが戻り、LEDスレッドが実行可能なら点滅処理が動く。LED側はUARTへ送信しない。
 
+## 段階7への移行時の質問
+
+| ID | 質問した段階 | 質問日時（JST、代替日時は注記） | 質問のカテゴリ | 質問内容 | 回答 |
+|---|---|---|---|---|---|
+| QA-040 | 段階6完了後／段階7前 | 2026-10-30（チャットの受領日。正確な送信日時は未取得） | 学習計画・次の段階 | 次の段階は何ですか？ | 記録では段階6が完了しているため、次は段階7「NT-Shellを組み込みLED制御コマンドを追加する」／#8。公式配布物の取得元・バージョン・ライセンス確認、UARTへの接続、LEDコマンド、ご本人のビルド・実機確認の順に進める。[段階7の手順](../stages/07_ntshell/README.md)。 |
+
+## 段階7の質問
+
+| ID | 質問した段階 | 質問日時（JST、代替日時は注記） | 質問のカテゴリ | 質問内容 | 回答 |
+|---|---|---|---|---|---|
+| QA-041 | 段階7／#8 | 2026-10-31（質問受領日。正確な送信日時は未取得） | UART割り込み・ISRとコールバック | 説明中のISRとはserial_cb関数のことですか？ | 説明で「ISR側」と呼んだアプリ側の処理はserial_cbを指す。厳密にはISRはInterrupt Service Routine（割り込み処理ルーチン）という役割名で、serial_cbはドライバのISRから直接呼ばれる登録済みコールバック。採用MCUX LPUARTではmcux_lpuart_isrからmcux_lpuart_irq_driven_isrを経て登録済みcallbackが呼ばれ、serial_cbも割り込みの実行文脈で動く。serial_cb専用スレッドはない。mainのserial_port_initがコールバックを登録し、serial_port_startが受信・エラー割り込みを有効にする。ISR側では待たずにキューへ投入し、待ち付き受取りと送信はmain側へ置く。採用ローカルドライバと[段階7ソース](../stages/07_ntshell/src/serial_port.c)を照合した説明であり、今回の本人の実機確認ではない。 |
+| QA-042 | 段階7／#8 | 2026-10-31（質問受領日。正確な送信日時は未取得） | Cの関数ポインタ・コールバック登録と呼出し | UARTドライバのISRは、なぜserial_cbを呼び出せるのですか？ | アプリが登録APIへserial_cbの関数ポインタを渡し、ドライバがデバイスごとのdata->callbackへ保存するため。共通APIはdev->apiのirq_callback_setを呼び、MCUXのmcux_lpuart_irq_callback_setがcallbackとcb_dataを保存する。割り込み時にmcux_lpuart_irq_driven_isrがdata->callback(dev, data->cb_data)を実行し、保存されたポインタの先にあるserial_cbへ制御を移す。登録時にはserial_cbを実行せず、割り込み時には同じISR文脈の関数呼出しとして実行する。staticは他のソースから名前を直接参照できる範囲を制限するが、渡したポインタによる呼出しを妨げない。[実際の登録と呼出しの対応](#qa-042-supplement)を参照。 |
+| QA-043 | 段階7／#8 | 2026-10-31（質問受領日。正確な送信日時は未取得） | ソフトウェア構成・関数の所属と関係 | 自作関数、Zephyr API、Zephyrデバイスドライバ、NT-Shellなどの所属と関係を図で整理してください。 | 関数の実装元による分類と、ISR／main／LEDスレッドという実行文脈を分けて説明する。自作4モジュール、NT-Shellのcore／util、Zephyrのカーネル・共通デバイスAPI・MCUXドライバ、NXP HAL、C標準ライブラリを分類。関数呼出し、登録済みコールバック、キューによるデータ転送とセマフォ通知を図示し、CMake・Kconfig・Devicetreeはビルド時の仕組みとして区別する。[所属表と整理図](#qa-043-supplement)を参照。 |
+| QA-044 | 段階7／#8 | 2026-10-31（質問受領日。正確な送信日時は未取得） | ボードターゲット・CPUコア・マルチスレッド | ビルド指定のcpu0以外の指定もありますか？ | MCXN947にはArm Cortex-M33が2コアあり、採用Zephyrにはfrdm_mcxn947/mcxn947/cpu1も定義されている。cpu0は主コア、cpu1は副コアのプログラムを作る指定。採用版ボード資料では単独実行できるのはCPU0で、CPU1はCPU0側から有効化する必要がある。デュアルコア構成ではSysbuildとCONFIG_SECOND_CORE_MCUXなどを使用し、単に今回の-bをcpu1へ置き換えるだけでは済まない。段階7のmainとLEDスレッドはどちらもCPU0上でZephyrが切り替えて実行し、スレッド名とCPUコア番号は別。今回の実習はcpu0を継続する。採用ローカルboard資料・cpu1のyaml／defconfigと[公式ボード資料](https://docs.zephyrproject.org/latest/boards/nxp/frdm_mcxn947/doc/index.html#targets-available)を照合。CPU1向けビルド・実機確認は未実施。 |
+| QA-045 | 段階7／#8 | 2026-10-31（質問受領日。正確な送信日時は未取得） | ConsoleとShell・機能比較 | Zephyrには標準でコンソール／シェルが使えますか？ 他環境で使っていたNT-Shellとの特徴と機能差を教えてください。 | Zephyrには文字入出力のConsoleと、コマンド登録・解析・補完・ヘルプ等を備える標準Shellがある。NT-Shellとの比較対象は標準Shell。両者とも編集・履歴を備えるが、NT-ShellのTabは履歴からの候補、ZephyrのTabは登録コマンド・サブコマンドに基づく補完。NT-ShellはOS非依存のCライブラリで入出力とコマンド処理をアプリへ接続し、Zephyr ShellはZephyr向けにログ・診断コマンド・複数バックエンドと統合されている。今回の総Flash／RAMをライブラリ単体の容量として比較しない。[Consoleの区別と比較表](#qa-045-supplement)を参照。今回の実装・設定は変更していない。 |
+
+<a id="qa-042-supplement"></a>
+
+### QA-042補足：関数の呼び出し先を登録して保存する
+
+採用Zephyr SHAのローカル`include/zephyr/drivers/uart.h`、`include/zephyr/drivers/uart/uart_internal.h`、
+`drivers/serial/uart_mcux_lpuart.c`と段階7の`serial_port.c`を照合した。
+
+アプリの`serial_port_init()`は次を実行する。
+
+```c
+uart_irq_callback_user_data_set(uart_dev, serial_cb, NULL);
+```
+
+関数名`serial_cb`を引数に渡すと、呼び出し先を表す関数ポインタとして渡される。この時点では`serial_cb`の本体を実行しない。
+`serial_cb`と`&serial_cb`はこの用途では同じ関数を指す。
+関数ポインタの型`uart_irq_callback_user_data_t`は、deviceポインタとvoidポインタを受け取り、値を返さない関数に対応する。
+
+共通APIは`dev->api`からUARTのAPI表を取得し、`api->irq_callback_set(dev, cb, user_data)`を呼ぶ。
+MCUXのAPI表は`.irq_callback_set = mcux_lpuart_irq_callback_set`であり、その登録関数が次を保存する。
+
+```c
+data->callback = cb;       /* 今回はserial_cbを指す。 */
+data->cb_data = cb_data;   /* 今回はNULL。 */
+```
+
+`data`はそのUARTデバイスの`dev->data`が指すドライバの状態領域であり、登録APIのローカル変数だけに保存しているわけではない。
+登録関数から戻った後も呼出し先は保持される。
+
+UART割り込みのドライバ処理では、`mcux_lpuart_isr()`から`mcux_lpuart_irq_driven_isr()`へ進み、次を実行する。
+
+```c
+if (data->callback) {
+    data->callback(dev, data->cb_data);
+}
+```
+
+保存した関数ポインタの先へ制御を移すので、この時点で実行されるのが`serial_cb(dev, NULL)`となる。
+ドライバがアプリの関数名をハードコードしたり、名前を検索したりしているわけではない。
+`serial_cb`の`static`は名前の参照範囲をこのCファイルに限定するが、ファイル内から渡した関数ポインタ経由の呼出しは可能。
+
+```text
+初期化時：serial_cbの関数ポインタ → 登録API → data->callbackへ保存
+割り込み時：ドライバのISR → data->callback(...) → serial_cbの本体を実行
+```
+
+この呼出しで新しいスレッドを起動しない。`serial_cb`とそこから呼ぶ受信・キュー投入処理もISR文脈で動く。
+`serial_cb`から戻った後はドライバのISRの続きを実行し、割り込み処理終了後にスレッド実行へ戻る。
+これはソースによる説明であり、実機の追跡結果ではない。その後、本人から関数ポインタの登録・呼出しの仕組みが分かったとの報告を受領した（2026-10-31）。本人に再説明を求める確認は行っていない。
+
+<a id="qa-043-supplement"></a>
+
+### QA-043補足：段階7の関数の所属と関係
+
+対象は段階7の実機アプリ。採用Zephyr SHA `dccb09599635bdff17633fa7e9dab014b91dce90`のローカルソース、
+取り込み済みNT-Shell 0.3.1のソースとCMakeLists.txtを照合した。テスト用の置換関数は含めない。
+本人から関数ポインタの登録・呼出しの仕組みが分かり、serial_port.cも確認済みとの報告を受領した（2026-10-31）。
+以下の図は説明用で、実機のトレース結果ではない。
+その後、本人から図で関数の分類・関係性が分かったとの報告を受領した（2026-10-31）。
+
+関数の所属は「どのソースが実装しているか」で決まり、実行文脈は「どのスレッドまたはISRが呼ぶか」で決まる。
+NT-Shellから呼ばれるserial_read／serial_write／command_callbackも自作関数であり、UARTドライバから呼ばれるserial_cbも自作関数である。
+mainも自作関数で、Zephyrがアプリの入口として呼ぶ。
+
+#### 自作関数の全体
+
+| 実装ファイル | 自作関数 | 主に使う他モジュールの機能 |
+|---|---|---|
+| src/main.c | main | 自作のserial_port_init、led_control_init、serial_puts、serial_port_start。NT-Shellのntshell_init、ntshell_set_prompt、ntshell_execute |
+| src/serial_port.c | serial_port_init、serial_port_start、serial_read、serial_write、serial_puts、serial_rx_failed、serial_cb、read_one、record_errors | ZephyrのUART共通API、device_is_ready、メッセージキュー、atomic、割り込みロック。C標準のstrlen |
+| src/commands.c | command_callback、dispatch、parse_interval、usage | NT-Shell utilのntopt_parse。自作serial_rx_failed、serial_puts、led_control_apply、led_control_take_error。C標準のstrlen、strcmp |
+| src/led_control.c | led_control_init、led_control_apply、led_control_take_error、led_entry | ZephyrのGPIO共通API、スレッド、メッセージキュー、セマフォ、atomic |
+
+#### 外部ソフトウェアとAPIの分類
+
+| 分類 | 今回使う関数／API例 | 実装・役割 |
+|---|---|---|
+| NT-Shell coreの公開API | ntshell_init、ntshell_set_prompt、ntshell_execute | third_party/ntshell/core/ntshell.c。シェルの初期化・プロンプト・実行ループ |
+| NT-Shell coreの内部処理 | vtrecv_init／vtrecv_execute、vtrecv_callback、actfunc_enterなどのactfunc_*、text_editor_*、text_history_*、vtsend_*、ntlibc_* | 同core配下。VT制御文字の解析、編集、履歴、端末制御の送信、文字列補助。ntlibc_strlenなどはNT-Shellの関数でありC標準のstrlenとは別 |
+| NT-Shell util | ntopt_parse | third_party/ntshell/util/ntopt.c。確定した行をargc／argvへ分割し、自作dispatchを呼ぶ。どの単語をLEDコマンドとするかはアプリが決める |
+| Zephyrのカーネル・同期・割り込みAPI | k_thread_create、k_msgq_put／get／purge、k_sem_take／give、atomic_get／set／clear、irq_lock／unlock | スレッド・待機・データ受け渡し・共有フラグ・割り込み排他。APIの一部はinline関数やマクロ経由。実装はkernel/、include/zephyr/、arch/など |
+| Zephyrの共通デバイスAPI | device_is_ready、gpio_is_ready_dt、gpio_pin_configure_dt、gpio_pin_set_dt、uart_irq_callback_user_data_set、uart_irq_rx_enable、uart_irq_err_enable、uart_irq_update、uart_irq_rx_ready、uart_fifo_read、uart_err_check、uart_poll_out | include/zephyr/device.h、include/zephyr/drivers/uart.h／uart/uart_internal.h、gpio.hなど。デバイス共通の入口から、必要に応じてAPI表に登録された機種向けドライバへ進む |
+| ZephyrのMCUX UARTドライバ内部 | mcux_lpuart_irq_callback_set、mcux_lpuart_isr、mcux_lpuart_irq_driven_isr、mcux_lpuart_fifo_read、mcux_lpuart_poll_out、mcux_lpuart_err_checkなど | drivers/serial/uart_mcux_lpuart.c。MCXのLPUARTに合わせた具体的な処理。共通APIの名前と内部関数名は別 |
+| ZephyrのGPIOドライバ内部 | gpio_mcux_port_set_bits_raw、gpio_mcux_port_clear_bits_rawなど | drivers/gpio/gpio_mcux.c。GPIO出力レジスタを操作。gpio_pin_set_dtから共通の補助関数・API表を経由して到達する |
+| ZephyrのLP Flexcommドライバ | nxp_lp_flexcomm_isr、nxp_lp_flexcomm_setirqhandler | drivers/mfd/mfd_nxp_lp_flexcomm.c。今回のボードではFlexcommの割り込みをUART子デバイスのmcux_lpuart_isrへ振り分ける。アプリのserial_cbを登録する処理とは別の階層 |
+| NXP MCUX SDK／HAL | LPUART_GetStatusFlags、LPUART_ReadByte、LPUART_WriteByteなど | modules/hal/nxp以下。ZephyrのUARTドライバから利用されるNXPの周辺回路操作。GPIOドライバの今回の出力処理はHAL関数を経由せずレジスタへ直接書く |
+| C標準ライブラリ | strlen、strcmp | 文字列の長さ・比較。今回のビルドはPicolibc。Zephyrのカーネル関数とは別 |
+
+ZephyrのデバイスドライバもZephyrの一部である。ここでは利用者向けの共通APIと、ハードウェア向け実装を分けた。
+各APIが必ず独立した実行時関数呼出しになるとは限らず、inline化やコンパイラの最適化もある。
+
+#### ソフトウェアの依存・呼出し関係
+
+実線は通常の呼出し／利用、点線は登録された関数ポインタによるアプリへの呼出しを表す。
+
+```mermaid
+flowchart TD
+    APP["自作アプリ<br/>main.c / serial_port.c<br/>commands.c / led_control.c"]
+    NT["NT-Shell<br/>ntshell_* / ntopt_parse<br/>編集・履歴・VT制御"]
+    K["Zephyrカーネル等<br/>k_msgq_* / k_sem_*<br/>k_thread_create / atomic_* / irq_*"]
+    API["Zephyr共通デバイスAPI<br/>uart_* / gpio_*"]
+    DR["ZephyrのMCUXドライバ<br/>UART / GPIO / Flexcomm"]
+    HAL["NXP SDK / HAL<br/>LPUART_ReadByte / WriteByte等"]
+    HW["MCXN947の周辺回路レジスタ"]
+    LIBC["C標準ライブラリ<br/>strlen / strcmp"]
+    APP --> NT
+    NT -. "serial_read / serial_write / command_callback" .-> APP
+    APP --> K
+    APP --> API
+    APP --> LIBC
+    API --> DR
+    DR -. "serial_cb：ISR文脈" .-> APP
+    DR --> HAL
+    HAL --> HW
+    DR -->|GPIO出力などは直接操作| HW
+```
+
+この図はソフトウェアの関係であり、上から順に一度ずつ実行するという意味ではない。
+NT-Shellには今回のLEDコマンドの実装もZephyr用のUART処理も含まれず、アプリがコールバックでつなぐ。
+
+#### UART受信から行確定までのデータの流れ
+
+矢印のラベルで関数呼出し、キューへのコピー、取り出し、戻り値を区別する。
+
+```mermaid
+flowchart TD
+    HW["UART受信割り込み"]
+    subgraph ISR["割り込み文脈"]
+        FLEX["Zephyr：nxp_lp_flexcomm_isr"]
+        DR["Zephyr：mcux_lpuart_isr<br/>→ mcux_lpuart_irq_driven_isr"]
+        CB["自作：serial_cb<br/>uart_fifo_readで読み出す"]
+        FLEX -->|UART子ISRを呼ぶ| DR
+        DR -->|登録済み関数を呼ぶ| CB
+    end
+    Q[("rx_bytes<br/>Zephyrのメッセージキュー")]
+    subgraph MAIN["mainスレッド"]
+        READ["自作：read_one<br/>serial_readから呼ばれる"]
+        NT["NT-Shell：ntshell_execute<br/>serial_readの結果を受け取り<br/>vtrecv_execute等で編集・行確定"]
+        CMD["自作：command_callback"]
+        READ -->|serial_read経由でバイトを返す| NT
+        NT -->|Enter時にコールバックを呼ぶ| CMD
+    end
+    HW -->|割り込み入口| FLEX
+    CB -. "k_msgq_put / K_NO_WAITでコピー" .-> Q
+    Q -. "read_oneのk_msgq_getで取り出す" .-> READ
+```
+
+ntshell_executeがmainでserial_readを呼び、serial_readがread_oneを呼ぶ。
+この図のread_oneからNT-Shellへの矢印は受信バイトを返す方向であり、read_oneがntshell_executeを呼ぶわけではない。
+ISRからmainのread_oneを直接呼ぶこともない。キューへデータを置き、mainが取り出す。
+serial_cbから呼ぶuart_fifo_readなどもISR文脈で動く。
+
+#### LEDコマンドの解析・指示・反映
+
+```mermaid
+flowchart TD
+    subgraph MAIN["mainスレッド"]
+        C["自作：command_callback"]
+        P["NT-Shell util：ntopt_parse"]
+        D["自作：dispatch<br/>parse_intervalで引数検査"]
+        A["自作：led_control_apply"]
+        C --> P
+        P -->|登録された解析後コールバック| D
+        D -->|共通LED関数を呼ぶ| A
+    end
+    Q[("led_requests<br/>Zephyrのメッセージキュー")]
+    S[("led_done<br/>Zephyrのセマフォ")]
+    subgraph LED["LEDスレッド"]
+        E["自作：led_entry"]
+        G["Zephyr共通API：gpio_pin_set_dt"]
+        DR["Zephyr GPIOドライバ<br/>gpio_mcux_port_set_bits_raw<br/>またはclear_bits_raw"]
+        E -->|GPIO更新を呼ぶ| G
+        G -->|共通補助関数・API表を経由| DR
+    end
+    HW["GPIO出力レジスタ → 赤色LED"]
+    A -. "k_msgq_putで指示をコピー" .-> Q
+    Q -. "led_entryのk_msgq_getで取り出す" .-> E
+    E -. "指示の処理結果を保存しk_sem_give" .-> S
+    S -. "led_control_applyのk_sem_takeが戻る" .-> A
+    DR -->|レジスタへ書く| HW
+```
+
+led_entryは受信した指示の初回GPIO反映後にmainへ結果を通知する。
+その後の点滅切り替えはLEDスレッドのk_msgq_getのタイムアウトを使って継続する。
+mainとLEDスレッドは別の実行単位だが、CPU0上でZephyrが切り替えて実行する。
+NT-Shellはmainの関数呼出しの中で動き、NT-Shell専用スレッドは作っていない。
+
+#### マクロ・設定・ビルド時の役割
+
+| 項目 | 分類・役割 |
+|---|---|
+| K_MSGQ_DEFINE、K_SEM_DEFINE、K_THREAD_STACK_DEFINE | Zephyrの定義用マクロ。キュー・セマフォ・スタックなどの領域や初期情報を用意する |
+| K_NO_WAIT、K_FOREVER、K_MSEC | Zephyrの待機時間を指定する定数・マクロ。これだけで待機を開始するわけではなく、APIへ渡して使う |
+| DT_CHOSEN、DT_ALIAS、GPIO_DT_SPEC_GET、DEVICE_DT_GET | ZephyrのDevicetree／デバイス参照用マクロ。ボードの生成定義に基づくデバイスやGPIO設定をCから参照する |
+| ARG_UNUSED | 未使用引数を明示するZephyrのマクロ |
+| CMakeLists.txtのtarget_sources等 | ビルド時のCMakeコマンド。今回の自作ソースとNT-Shellのソースをアプリへ組み込む |
+| prj.confのCONFIG_* | Kconfigの設定。UART・GPIO・スレッドなどの有効化とスタック設定。Cの関数ではない |
+| NT-ShellとCONFIG_SHELL | 今回はNT-Shellをアプリへ組み込み、Zephyr標準ShellはCONFIG_SHELL=nで無効にする |
+
+全体を1つのファームウェアへリンクする。モジュールごとに独立したプロセスが起動する構成ではない。
+関数の名前の接頭辞だけではなく、その定義ファイル・登録先・呼出し元で所属を判断する。
+
+<a id="qa-045-supplement"></a>
+
+### QA-045補足：Zephyr標準Console・ShellとNT-Shellの比較
+
+比較基準は今回固定しているZephyr 4.4.2と、公式配布NT-Shell 0.3.1。
+公式Web資料も参照し、比較に挙げた機能は採用ローカルソースと資料で照合した。
+Zephyrの`doc/services/shell/index.rst`、`include/zephyr/console/console.h`、`subsys/shell/Kconfig`、
+`subsys/shell/backends/Kconfig.backends`、公式shell_moduleサンプル、取り込み済みNT-Shellのntshell.c／ntconf.h／ntopt.cを確認した。
+
+#### ConsoleとShellの違い
+
+| 機能 | 主な役割 | コマンドの意味を解釈するか |
+|---|---|---|
+| Zephyr Console | 文字入出力。設定に応じてprintkの出力先や、console_getchar／console_getline等の入力APIを使う | Consoleだけではled onなどのコマンド処理は提供しない |
+| Zephyr標準Shell | プロンプト、編集、コマンド登録・解析、補完、ヘルプ | 登録されたコマンドのハンドラへ振り分ける |
+| NT-Shell | OSに依存しない入力編集・履歴・VT端末制御のライブラリ。確定行をアプリのコールバックへ渡す | 今回はntopt_parseと自作dispatchでコマンドを処理する |
+
+従って、NT-Shellと機能比較する相手はZephyrの標準Shellである。
+Zephyrに標準で含まれることと、各アプリのビルドで有効になっていることは別。
+標準ShellではCONFIG_SHELLと適切なバックエンドを設定する。
+現在の段階7はCONFIG_SHELL=n、CONSOLE／CONSOLE_SUBSYS／PRINTK／LOGも無効で、UART APIを直接使ってNT-Shellへ接続している。
+
+#### 機能と特徴の比較
+
+Zephyrの各機能は、必要なKconfig設定・バックエンド・デバイスが有効な場合に利用できる。
+NT-Shell欄では、ライブラリ本体と今回アプリが追加した処理を区別する。
+
+| 項目 | NT-Shell 0.3.1 | Zephyr標準Shell |
+|---|---|---|
+| 依存・移植 | C89互換。OS・C標準ライブラリへの依存や動的メモリ確保なし。read／writeコールバックで他環境へ接続しやすい | Zephyrのカーネル・デバイス・Kconfigへ統合された機能。他OSへ移す際はZephyr依存部分の移植が必要 |
+| 入力編集・履歴 | Backspace、カーソル移動、Ctrl+C、履歴などを備える。今回のntconf.hは編集領域64 B・履歴8件 | 編集・履歴・複数行表示などを備え、Kconfigで機能や領域を調整 |
+| Tab | 入力済み履歴から候補を探す。未実行の登録コマンド名を網羅して補完する仕組みは本体にない | 登録したコマンド・サブコマンドを候補表示・補完する |
+| コマンド追加 | 確定行コールバックで処理。ntopt_parseは単語分割とコールバック呼出しを提供。今回のdispatchがLEDコマンドの意味を決める | SHELL_CMD_REGISTER等のマクロでコマンド・サブコマンド・ハンドラを登録。引数数の検査も指定できる |
+| ヘルプ | 今回は自作usage／helpで説明文字列を表示する | 登録時の説明文を使い、コマンドごとの-h／--help等を提供 |
+| Zephyr診断機能 | Zephyr向けの診断コマンドはアプリで追加・接続する | 設定によりkernel、device、GPIO、I2C、sensor、flash等のコマンド群を利用できる。全機能が既定で有効という意味ではない |
+| ログとの共存 | 本体にZephyr Loggingとの統合はない。入力行とログの表示調整は追加対応が必要。今回はLOG=n | CONFIG_SHELL_LOG_BACKENDでZephyr Loggingと統合し、シェル出力とログを調整する |
+| 入出力経路 | 抽象化されたread／writeをアプリが実装する。UART以外もコールバック実装で対応する | UART、USB CDC ACM、RTT、Telnet、Bluetooth LE NUS等のバックエンドを利用できる。対応機器と設定は別途必要 |
+| 実行方法 | ライブラリはスレッドを作らず、呼出し側が実行場所を決める。今回はmainでntshell_executeを動かす | 通常のマルチスレッド構成ではShellのインスタンス用スレッドが処理を担当する |
+| 容量調整 | 小さな機能構成と固定領域。実装が少なく追いやすいが、Zephyr向けの接続・追加機能はアプリ側に置く | Kconfigで機能を選択し、CONFIG_SHELL_MINIMALを基準に必要機能だけ追加する構成も可能 |
+
+Tabの具体例：NT-Shellでは一度`led blink 250`を入力した後、その履歴を候補にできる。
+Zephyr Shellでは`led`や`blink`をコマンドツリーへ登録していれば、実行履歴がなくてもその名前を補完できる。
+
+どちらも今回のLEDのON／OFF・点滅間隔の意味とGPIO操作はアプリの処理が必要。
+Zephyr Shellへ変更する場合も、LED操作の共通関数は利用し、シェル側のハンドラと出力・受信経路を適合させる。
+現在のserial_cbと標準ShellのUART受信を同じUARTで同時に有効化する変更は、コールバック所有権が競合するため避け、受信担当を設計し直す。
+この比較では実装・設定の切替えは行っていない。
+
+#### 今回の選定とメモリ使用量
+
+Zephyr専用の診断・操作用CLIを作るなら、統合機能のある標準Shellが有力な候補になる。
+他のOSやベアメタル環境のNT-Shellコード・操作感を引き継ぐ場合は、NT-ShellのOS非依存性が役立つ。
+段階7は外部OSSの取り込み・CMake統合・UART入出力コールバック・独自コマンド解析を学ぶ課題でもあり、今回のNT-Shell構成でこれらを学べる。
+
+今回のFlash 31,376 B・RAM 10,864 BはZephyr、ドライバ、スレッド、キュー、アプリとNT-Shellを含む全体値。
+NT-Shell単体の使用量として扱わず、同等機能のZephyr Shell版との容量比較は未実施とする。
+公式サイトのNT-Shellの概算ROM／RAM値も今回のビルド結果の代わりにはしない。
+
+参照した一次資料：
+
+- [Zephyr Console API](https://docs.zephyrproject.org/latest/doxygen/html/group__console__api.html)
+- [Zephyr Shell](https://docs.zephyrproject.org/latest/services/shell/index.html)
+- [NT-Shellの特徴と編集キー](https://cubeatsystems.com/ntshell/)
+- [NT-Shell API](https://cubeatsystems.com/ntshell/api.html)
+- [NT-Shell公式配布一覧](https://cubeatsystems.com/ntshell/download.html)
+- 採用版のローカルソースと段階7の[取得・固定情報](../stages/07_ntshell/UPSTREAM.md)
+
 ## 関連する記録
 
 - [学習ロードマップ](roadmap.md)

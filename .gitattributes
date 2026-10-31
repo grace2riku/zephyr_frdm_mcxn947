@@ -2,3 +2,8 @@
 stages/01_hello_world/evidence/* -text -whitespace
 # 上流からコピーしたライセンス本文も改変しない。
 stages/01_hello_world/LICENSE.apache-2.0 -text -whitespace
+# 段階7のNT-Shellは公式アーカイブとバイト単位で照合する。
+stages/07_ntshell/third_party/ntshell/core/* -text -whitespace
+stages/07_ntshell/third_party/ntshell/util/* -text -whitespace
+stages/07_ntshell/evidence/*.log -text -whitespace
+stages/07_ntshell/user-evidence/*.log -text -whitespace

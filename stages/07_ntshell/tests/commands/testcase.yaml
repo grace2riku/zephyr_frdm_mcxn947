@@ -1,0 +1,7 @@
+tests:
+  stage7.commands:
+    platform_allow:
+      - qemu_cortex_m3
+    tags:
+      - stage7
+      - commands
