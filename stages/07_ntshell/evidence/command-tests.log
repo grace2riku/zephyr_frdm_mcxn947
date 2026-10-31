@@ -1,0 +1,48 @@
+-- west build: running target run
+[0/1] To exit from QEMU enter: 'CTRL+a, x'[QEMU] CPU: cortex-m3
+C:\Users\grace\zephyr-sdk-1.0.1\hosttools\qemu\qemu-system-arm.exe: warning: nic stellaris_enet.0 has no peer
+*** Booting Zephyr OS build v4.4.2 ***
+Running TESTSUITE stage7_commands
+===================================================================
+START - test_blink_error_reported_before_next_command
+ PASS - test_blink_error_reported_before_next_command in 0.001 seconds
+===================================================================
+START - test_gpio_error_has_no_success_reply
+ PASS - test_gpio_error_has_no_success_reply in 0.001 seconds
+===================================================================
+START - test_help_and_empty
+ PASS - test_help_and_empty in 0.001 seconds
+===================================================================
+START - test_invalid_input_never_changes_led
+ PASS - test_invalid_input_never_changes_led in 0.005 seconds
+===================================================================
+START - test_length_boundary_and_many_arguments
+ PASS - test_length_boundary_and_many_arguments in 0.002 seconds
+===================================================================
+START - test_rx_loss_blocks_execution
+ PASS - test_rx_loss_blocks_execution in 0.001 seconds
+===================================================================
+START - test_valid_led_commands
+ PASS - test_valid_led_commands in 0.001 seconds
+===================================================================
+TESTSUITE stage7_commands succeeded
+
+------ TESTSUITE SUMMARY START ------
+
+SUITE PASS - 100.00% [stage7_commands]: pass = 7, fail = 0, skip = 0, total = 7 duration = 0.012 seconds
+ - PASS - [stage7_commands.test_blink_error_reported_before_next_command] duration = 0.001 seconds
+ - PASS - [stage7_commands.test_gpio_error_has_no_success_reply] duration = 0.001 seconds
+ - PASS - [stage7_commands.test_help_and_empty] duration = 0.001 seconds
+ - PASS - [stage7_commands.test_invalid_input_never_changes_led] duration = 0.005 seconds
+ - PASS - [stage7_commands.test_length_boundary_and_many_arguments] duration = 0.002 seconds
+ - PASS - [stage7_commands.test_rx_loss_blocks_execution] duration = 0.001 seconds
+ - PASS - [stage7_commands.test_valid_led_commands] duration = 0.001 seconds
+
+------ TESTSUITE SUMMARY END ------
+
+===================================================================
+PROJECT EXECUTION SUCCESSFUL
+FAILED: [code=4294967295] zephyr/CMakeFiles/run_qemu C:/Users/grace/Documents/ChatGPT/zephyr_frdm_mcxn947/.tmp/build/07_ntshell_commands_codex/zephyr/CMakeFiles/run_qemu 
+C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\grace\Documents\ChatGPT\zephyr_frdm_mcxn947\.tmp\build\07_ntshell_commands_codex && C:\Users\grace\zephyr-sdk-1.0.1\hosttools\qemu\qemu-system-arm.exe -cpu cortex-m3 -machine lm3s6965evb -net none -pidfile qemu.pid -chardev stdio,id=con,mux=on -serial chardev:con -mon chardev=con,mode=readline -nographic -icount shift=6,align=off,sleep=off -rtc clock=vm -kernel C:/Users/grace/Documents/ChatGPT/zephyr_frdm_mcxn947/.tmp/build/07_ntshell_commands_codex/zephyr/zephyr.elf"
+ninja: build stopped: subcommand failed.
+FATAL ERROR: command exited with status 4294967295: 'C:\Users\grace\zephyrproject-mcxn947\tools\cmake-3.31.8-windows-x86_64\bin\cmake.EXE' --build 'C:\Users\grace\Documents\ChatGPT\zephyr_frdm_mcxn947\.tmp\build\07_ntshell_commands_codex' --target run

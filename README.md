@@ -22,6 +22,8 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 段階6（#7）は2026-10-14に着手し、2026-10-24に本人の文字単位・行単位エコー、割り込み受信中のLED点滅継続、31 B貼り付け、32 B超過後の復帰、CR/LFを確認しました。ポーリング版で発生した貼り付け時のUARTオーバーランは検査・通知・復帰処理を追加し、本人の実機で確認済みです。割り込み版の本人ビルドは終了コード0。Codexの別保存先での事前ビルドとは区別して記録しています。本人の3行・100行連続入力と最後のokも確認済みです。今回の100行ではキュー満杯通知は観測されず、満杯分岐の実機確認は未実施です。ISRとキューの動作を図解し、本人のREADME確認も2026-10-24に完了しました。割り込み版の書き込み終了コード0、COM5・プローブ一致、100行入力前後のLED継続も確認済みです。本人のPR確認と明示的なマージ承認後、2026-10-24に[PR #23](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/23)をマージしました。その後の別途の明示的な承認に基づき、イシュー #7の全チェック項目を完了に更新し、completedとしてクローズしました。段階6は完了です。[段階6の手順と確認状況](stages/06_uart_echo/README.md)を参照してください。
 
+2026-10-31：段階7（#8）は、本人のビルド・生成設定・書き込みと基本実機確認まで完了しました。NT-Shellの起動・help、LEDの点灯／消灯・点滅・速度変更、入力待ち中の点滅継続、不正入力、編集・履歴・取消し、CR／LF／CR+LFを確認済みです。最終状態はLED消灯、送信CR+LF・受信CR。本人のREADME確認も完了し、コミット・プッシュ・PR作成へ進みます。段階7のPRは未作成、マージ・イシューのクローズは未実施です。[段階7の記録と完了条件の照合](stages/07_ntshell/README.md)を参照してください。
+
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)
 - [学習に使用したAIモデルの記録方法](docs/ai-models.md)
@@ -33,6 +35,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 - [段階4：スレッドとメッセージキューでLEDを制御する](stages/04_threads_queues/README.md)
 - [段階5：UART APIでHello Worldを送信する](stages/05_uart_tx/README.md)
 - [段階6：UARTのポーリング受信と割り込み受信でエコーを実装する](stages/06_uart_echo/README.md)
+- [段階7：NT-ShellでLEDをコマンド操作する](stages/07_ntshell/README.md)
 
 ## フォルダ構成
 
@@ -86,18 +89,28 @@ zephyr_frdm_mcxn947/
     │   ├── src/main.c
     │   ├── evidence/
     │   └── user-evidence/
-    └── 06_uart_echo/
+    ├── 06_uart_echo/
+    │   ├── README.md
+    │   ├── CMakeLists.txt
+    │   ├── prj.conf
+    │   ├── prj_irq.conf
+    │   ├── src/main.c
+    │   ├── src/poll_line.c
+    │   ├── src/irq_line.c
+    │   └── evidence/
+    └── 07_ntshell/
         ├── README.md
+        ├── UPSTREAM.md
         ├── CMakeLists.txt
         ├── prj.conf
-        ├── prj_irq.conf
-        ├── src/main.c
-        ├── src/poll_line.c
-        ├── src/irq_line.c
+        ├── src/
+        ├── third_party/ntshell/
+        ├── scripts/
+        ├── tests/commands/
         └── evidence/
 ```
 
-段階6のフォルダを追加しました。段階7以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
+段階7のフォルダを追加しました。段階8以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
 
 実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。段階1で取得した有効67モジュールのSHAとPython依存の固定情報を段階0フォルダへ保存しました。
 
