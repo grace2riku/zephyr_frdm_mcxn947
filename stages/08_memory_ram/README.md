@@ -2,6 +2,7 @@
 
 対象：[イシュー #9](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/9)。前提：[段階7](../07_ntshell/README.md)。
 開始日：2026-10-31（JST）。作業ブランチ：`codex/stage8-memory-ram`。
+成果物：[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)（2026-11-01作成、本人のPR確認待ち）。
 
 ## 目的と現在の状態
 
@@ -26,7 +27,8 @@ GDBの切断・終了は終了コード0だったが、その直後のUARTは無
 | バージョン・手順・期待動作・結果・未確認事項をREADMEへ残す | 本READMEと証跡に記録済み。2026-11-01に本人が実際の実習内容と一致すると確認 |
 
 本人がREADMEを確認し、実際の実習内容と一致すると報告してPR作成を依頼した（2026-11-01受領）。
-**PR作成を進める。本人のPR確認、マージとイシューのクローズは未実施。**
+Codexが実装と記録をコミット2ae5e69としてプッシュし、[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)を作成した（2026-11-01）。
+**本人のPR確認、マージとイシューのクローズは未実施。**
 イシュー #9はOPEN。本人の明示的な承認後にマージとクローズを行う。
 詳細な実行結果は[user-evidence/README.md](user-evidence/README.md)に保存した。
 
@@ -361,6 +363,6 @@ RESETによるUART応答の復旧と、最終状態のLED消灯・RAM再初期�
 | 実行時最大スタック／ヒープ・厳密な周期 | 未測定 |
 | 最終状態 | 段階8の同じビルド、GDB終了済み・終了コード0。RESET後のシェル応答とLED消灯、先頭R32=0x03020100。端末は送信CR+LF・受信CR（設定変更の報告なし） |
 | 本人のREADME確認 | 実際の実習内容と一致するとの確認報告とPR作成依頼を受領（2026-11-01） |
-| PR作成・本人のPR確認／マージ／イシュー完了 | PR作成を進める。PR確認・マージ・クローズは未実施。#9はOPEN |
+| PR作成・本人のPR確認／マージ／イシュー完了 | PR #26を2026-11-01に作成。本人のPR確認・マージ・クローズは未実施。#9はOPEN |
 
 本人の出力や観察は[user-evidence](user-evidence/README.md)へ区別して残す。
