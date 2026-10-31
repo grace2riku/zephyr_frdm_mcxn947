@@ -873,6 +873,16 @@ NT-Shell単体の使用量として扱わず、同等機能のZephyr Shell版と
 - [NT-Shell公式配布一覧](https://cubeatsystems.com/ntshell/download.html)
 - 採用版のローカルソースと段階7の[取得・固定情報](../stages/07_ntshell/UPSTREAM.md)
 
+## 段階8の質問
+
+| ID | 質問した段階 | 質問日時（JST、代替日時は注記） | 質問のカテゴリ | 質問内容 | 回答 |
+|---|---|---|---|---|---|
+| QA-046 | 段階8／#9 | 2026-10-31（質問受領日。正確な送信日時は未取得） | Kconfigの既定値・明示的な無効化 | Console・Shell・PRINTK・LOG等はデフォルトがyだから明示的にnにしていますか？ | すべてが既定でyではない。採用ZephyrのCPU0ボードdefconfigはCONSOLE・UART_CONSOLEをyにし、PRINTK・BOOT_BANNERの定義はdefault y。一方SHELL・LOG・CONSOLE_SUBSYSは通常の既定値がn。今回は有効な既定設定を解除する指定と、使わない機能を明記する指定を併用し、UARTを自作NT-Shell経路で扱う。BOOT_BANNERはPRINTKをselectするため両方を無効化する。prj.confはボードdefconfigの指定に優先するが、nの明記が他機能のselectを強制的に覆すわけではなく、最終状態は生成.configで確認する。採用ローカルのboard defconfig・各Kconfigと[公式の設定マージ説明](https://docs.zephyrproject.org/latest/build/kconfig/setting.html#the-initial-configuration)を照合。ソース変更・追加ビルドは行っていない。本人のCMake・設定確認完了や外部OSS照合結果はまだ未受領。 |
+| QA-047 | 段階8／#9 | 2026-10-31（質問受領日。正確な送信日時は未取得） | Kconfigのselect | BOOT_BANNERがPRINTKを有効化するselectとは何ですか？ | selectは、選択元がyのとき選択先の設定をyにするKconfigの指定。採用版kernel/KconfigのBOOT_BANNERにはselect PRINTKがあり、起動バナーを有効にするとPRINTKも有効になる。BOOT_BANNER=yのままPRINTK=nを指定しても、このselectにより最終的なPRINTKはyになる。今回は両方をnにしてこの経路での有効化も止める。BOOT_BANNER=nだけでPRINTKまでnになるわけではなく、PRINTKには自身のdefault yもある。Cの関数呼出しではなく、ビルド時の設定決定の仕組み。[公式のselect説明](https://docs.zephyrproject.org/latest/build/kconfig/tips.html#select-statements)も照合。設定・ソースの変更や追加ビルドは行っていない。 |
+| QA-048 | 段階8／#9 | 2026-10-31（質問受領日。正確な送信日時は未取得） | アプリ設定と生成設定・段階ごとの独立ビルド | $memoryBuild/zephyr/.configとstages/03_led_blink/prj.confはどういう関係ですか？ | prj.confは各アプリ向けに人が用意する入力設定、.configはそのビルドでボード設定・アプリ設定とKconfigの既定値や依存条件から決定した最終設定。今回の$memoryBuildは外部workspaceのbuild/08_memory_ramであり、入力はstages/08_memory_ram/prj.conf。段階3のprj.confは今回のビルドでは参照・継承・自動マージしない。段階3をビルドした際には段階3のprj.confを基に、そのビルド先に別の.configが生成される。段階3のPRINTK=yと段階8のPRINTK=nの違いも、アプリごとに独立しているため矛盾しない。段階8のCMakeCacheのCONF_FILEも確認済み。[公式の設定生成説明](https://docs.zephyrproject.org/latest/build/kconfig/setting.html#the-initial-configuration)を参照。設定ファイルの変更や追加ビルドは行っていない。 |
+| QA-049 | 段階8／#9 | 2026-10-31（質問受領日。正確な送信日時は未取得） | GDBのページ送り | (gdb)と表示されるまで2回Enterを押しましたが大丈夫ですか？ | 問題ない。提供ログにType RET for moreの待機が2回あり、Enterは次のページの出力を表示する操作。set pagination offで以後のページ送り待機を無効にできる。提供ログではCPU0接続・段階8 ELFの34,200 Bロードが完了して(gdb)へ到達した。補助プローブブートエラーとロード前resetのエラーは、その後の接続・ロード完了と区別する。ロード後のreset・continueとRAM照合は次に確認する。[GDB公式のページ送り説明](https://sourceware.org/gdb/current/onlinedocs/gdb.html/Screen-Size.html)を参照。 |
+| QA-050 | 段階8／#9 | 2026-10-31（質問受領日。正確な送信日時は未取得） | GDB終了後の復旧・RESET | GDB終了後にled offとmem readへ反応しません。リセットしてよいですか？ | ボードのRESETで復旧確認してよい。GDBでの既知パターン照合の確認記録は残るが、RAMは起動時の初期パターンへ戻り、先頭32 bitのread期待値は0x03020100になる。終了後の自動再開は未成功として記録し、原因は終了時のmonitor・detach・quitの応答と終了コードから確認する。RESET後の起動・help・read・LEDを確認する手順を案内。質問時点では復旧結果は未確認。 |
+
 ## 関連する記録
 
 - [学習ロードマップ](roadmap.md)
