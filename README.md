@@ -24,7 +24,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 2026-10-31：段階7（#8）は完了しました。本人がビルド・書き込み、NT-Shellの起動・help・LED操作と入力待ち中の点滅継続、不正入力・編集・履歴・取消し・CR／LF／CR+LF、READMEとPRを確認しました。本人の明示的な承認後に[PR #25](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/25)をマージし、イシュー #8の全10チェック項目を完了へ更新してcompletedとしてクローズしました。ローカルmainも同期済みです。最終状態はLED消灯、送信CR+LF・受信CR。未実施の追加ケースは区別して[段階7の記録](stages/07_ntshell/README.md)に残しています。
 
-2026-10-31：段階8（#9）は、本人の環境・ソース・設定確認、CPU0向けビルド・書き込み、8／16／32 bitのRAM読み書き・ダンプ、境界・不正入力の拒否、RESET初期化とGDB照合まで進みました。Flash 34,200 B・RAM 10,992 B。GDB切断・終了は終了コード0ですが、その直後のUARTは無応答となり、本人のRESETで復旧しました。原因は未確定として記録しています。最終状態はLED消灯・RAM初期パターン・GDB終了済み。2026-11-01に本人がREADMEと実習内容の一致を確認し、PR作成を依頼しました。[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)を作成しました。本人のPR確認・マージ・イシュー完了はこれからです。[段階8の手順と確認状況](stages/08_memory_ram/README.md)を参照してください。
+2026-11-01：段階8（#9）は完了しました。本人が8／16／32 bitのRAM読み書き・ダンプ、境界・不正入力の拒否、RESET初期化とGDB照合、README・PRを確認しました。明示的な承認後に[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)をマージし、イシュー #9の全8チェック項目を完了・completedとしてクローズしました。Flash 34,200 B・RAM 10,992 B。GDB終了直後のUART無応答はRESETで復旧し、原因未確定として記録を保持しています。最終状態はLED消灯・RAM初期パターン・GDB終了済み。ローカルmainも同期済みです。[段階8の手順と確認結果](stages/08_memory_ram/README.md)を参照してください。
 
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)

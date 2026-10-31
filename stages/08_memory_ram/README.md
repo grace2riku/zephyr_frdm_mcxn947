@@ -2,7 +2,7 @@
 
 対象：[イシュー #9](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/9)。前提：[段階7](../07_ntshell/README.md)。
 開始日：2026-10-31（JST）。作業ブランチ：`codex/stage8-memory-ram`。
-成果物：[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)（2026-11-01作成、本人のPR確認待ち）。
+成果物：[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)（2026-11-01に本人のPR確認・明示的な承認後にマージ済み）。イシュー #9もcompletedとしてクローズ済み。
 
 ## 目的と現在の状態
 
@@ -28,8 +28,10 @@ GDBの切断・終了は終了コード0だったが、その直後のUARTは無
 
 本人がREADMEを確認し、実際の実習内容と一致すると報告してPR作成を依頼した（2026-11-01受領）。
 Codexが実装と記録をコミット2ae5e69としてプッシュし、[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)を作成した（2026-11-01）。
-**本人のPR確認、マージとイシューのクローズは未実施。**
-イシュー #9はOPEN。本人の明示的な承認後にマージとクローズを行う。
+本人がPR #26の内容を確認し、問題ないとしてマージとイシュー #9のクローズを明示的に依頼した（2026-11-01受領）。
+Codexが確認済みhead `6c6918654bc72b12e56b6db4bab0a94ab94b5bac`を指定してマージした。
+マージコミットは`d7b4b8eafdbed3d970a7ce173b26bf7010c5d4db`。イシュー #9の全8チェック項目を完了に更新し、completedとしてクローズした。
+**段階8は完了。ローカルmainもマージ済み内容へ同期した。** GDB終了直後の無応答の原因未確定という記録と、未確認・未測定の追加項目は保持する。
 詳細な実行結果は[user-evidence/README.md](user-evidence/README.md)に保存した。
 
 ## 学習に使用したAIモデル
@@ -363,6 +365,6 @@ RESETによるUART応答の復旧と、最終状態のLED消灯・RAM再初期�
 | 実行時最大スタック／ヒープ・厳密な周期 | 未測定 |
 | 最終状態 | 段階8の同じビルド、GDB終了済み・終了コード0。RESET後のシェル応答とLED消灯、先頭R32=0x03020100。端末は送信CR+LF・受信CR（設定変更の報告なし） |
 | 本人のREADME確認 | 実際の実習内容と一致するとの確認報告とPR作成依頼を受領（2026-11-01） |
-| PR作成・本人のPR確認／マージ／イシュー完了 | PR #26を2026-11-01に作成。本人のPR確認・マージ・クローズは未実施。#9はOPEN |
+| PR作成・本人のPR確認／マージ／イシュー完了 | PR #26を2026-11-01に作成。本人のPR確認・明示的な承認後に確認済みheadを指定してマージし、#9の全8チェックを完了・completedとしてクローズ。同日ローカルmainも同期 |
 
 本人の出力や観察は[user-evidence](user-evidence/README.md)へ区別して残す。
