@@ -1,0 +1,7 @@
+Pb: (100) Finished writing Flash successfully.
+Nt: Loaded 0x8684 bytes in 295ms (about 116kB/s)
+Nt: Reset target (system)
+Nc: Starting execution using system reset with a stall address
+Nc: Retask read watchpoint 1 at 0x50000040 to use for boot ROM stall
+PS C:\Users\grace\zephyrproject-mcxn947\zephyr> $LASTEXITCODE
+0
