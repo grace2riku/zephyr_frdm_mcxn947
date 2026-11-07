@@ -2,7 +2,14 @@
 
 NXP FRDM-MCXN947評価ボードを使い、小さな動作確認を積み重ねてZephyrの使い方を段階的に学ぶプロジェクトです。
 
-GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、OV7670カメラ、Slint描画までを対象にします。
+学習の軸は、**Zephyrの設定からデバイスを使う流れ、ドライバAPI、スレッド・キューによる役割分担**です。
+GPIO・UART・LCD・OV7670カメラを題材に、Devicetree／KconfigとAPIの動作を対応させます。
+NT-Shellの接続、RAM・レジスタ操作は補助教材として扱い、Slintは任意の発展課題とします。
+
+2026-11-07に本人が、段階9に限らず今後もこの目的から離れない方針を明示しました。
+各操作の前に「使うZephyr機能・目的・本人が変える点・見える動作」を短く示します。
+GDBの照合やC・MCU固有の細部の調査は必要時の補助に位置付けます。
+継続方針は[AGENTS.md](AGENTS.md)と[ロードマップ](docs/roadmap.md)を参照してください。
 
 ## 現在の状態
 
@@ -26,6 +33,8 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 
 2026-11-01：段階8（#9）は完了しました。本人が8／16／32 bitのRAM読み書き・ダンプ、境界・不正入力の拒否、RESET初期化とGDB照合、README・PRを確認しました。明示的な承認後に[PR #26](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/26)をマージし、イシュー #9の全8チェック項目を完了・completedとしてクローズしました。Flash 34,200 B・RAM 10,992 B。GDB終了直後のUART無応答はRESETで復旧し、原因未確定として記録を保持しています。最終状態はLED消灯・RAM初期パターン・GDB終了済み。ローカルmainも同期済みです。[段階8の手順と確認結果](stages/08_memory_ram/README.md)を参照してください。
 
+2026-11-01：段階9（#10）に着手しました。`codex/stage9-register-access`にGPIO0 bit 10に限定するレジスタ操作を実装し、CPU0向け事前ビルド・QEMUの9テストを確認しました。本人提供のRM（Rev. 7, 2025-10-10）との本文照合もCodexが完了し、コード変更は不要でした。本人の環境4項目も一致を確認しました。2026-11-07に本人のファイル照合PASS・終了コード0と、CPU0ビルド166/166・終了コード0を確認しました。Flash 34,436 B・RAM 8,744 B。register_commands.cの理解は本人の依頼で保留し、ビルド成功とは区別しています。今回の接続先も本人の列挙でCOM5／HN2APUBRDCEPTと確認しました。本人のFlash成功表示・0x8684 Bロード・終了コード0も確認しました。本人の起動表示・プロンプト・初期LED消灯・helpの確認報告も受領しました。reg infoと3レジスタの初期readも提供UARTで確認し、LED消灯維持の報告を受領しました。PCOR 2回／PSOR 1回のOK応答・PDOR変化と、LED点灯→点灯維持→消灯の本人報告も確認しました。PTOR 2回の反転と消灯状態での3操作先への値0による状態維持もUARTと本人の目視報告で確認しました。不正入力9件の拒否と、LED消灯維持・正常readとhelpへの応答も確認しました。本人の依頼によりGDB照合は今回の必須項目から除外しました。ZephyrのGPIOドライバと設定の役割を確認する補助教材として整理し、2026-11-08に本人がREADMEの6項目と実習内容の一致を確認し、コミット・プッシュ・PR作成を依頼しました。[PR #27](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/27)を作成しました。次は本人のPR確認です。マージ・クローズは未実施です。GDBは未実施の省略です。[段階9の仕様と手順](stages/09_register_access/README.md)を参照してください。
+
 - [段階0〜15のロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)
 - [学習に使用したAIモデルの記録方法](docs/ai-models.md)
@@ -39,6 +48,7 @@ GPIO、スレッド、UART、NT-Shell、メモリ／レジスタ操作、LCD、O
 - [段階6：UARTのポーリング受信と割り込み受信でエコーを実装する](stages/06_uart_echo/README.md)
 - [段階7：NT-ShellでLEDをコマンド操作する](stages/07_ntshell/README.md)
 - [段階8：NT-Shellで専用RAMを読み書き・ダンプする](stages/08_memory_ram/README.md)
+- [段階9：ZephyrのGPIOドライバと周辺レジスタの役割を確認する](stages/09_register_access/README.md)
 
 ## フォルダ構成
 
@@ -111,7 +121,18 @@ zephyr_frdm_mcxn947/
     │   ├── scripts/
     │   ├── tests/commands/
     │   └── evidence/
-    └── 08_memory_ram/
+    ├── 08_memory_ram/
+    │   ├── README.md
+    │   ├── UPSTREAM.md
+    │   ├── CMakeLists.txt
+    │   ├── prj.conf
+    │   ├── src/
+    │   ├── third_party/ntshell/
+    │   ├── scripts/
+    │   ├── tests/commands/
+    │   ├── evidence/
+    │   └── user-evidence/
+    └── 09_register_access/
         ├── README.md
         ├── UPSTREAM.md
         ├── CMakeLists.txt
@@ -124,7 +145,7 @@ zephyr_frdm_mcxn947/
         └── user-evidence/
 ```
 
-段階8のフォルダを追加しました。段階9以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
+段階9のフォルダを追加しました。段階10以降のフォルダは、各イシューに着手するときに順次追加します。予定名はロードマップに記載しています。
 
 実装段階では各フォルダにREADMEと必要なアプリのソース・設定を置き、段階ごとにビルド・検証できる状態を残します。Zephyr本体、SDK、仮想環境、ビルド出力はこのリポジトリへコミットしません。段階1で取得した有効67モジュールのSHAとPython依存の固定情報を段階0フォルダへ保存しました。
 

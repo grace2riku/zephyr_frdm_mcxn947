@@ -1,0 +1,15 @@
+mcxn947> reg info
+GPIO0: 32-bit only; red LED bit 10, active low; mask=0x00000400
+  PDOR 0x50096040 shell:read
+  PSOR 0x50096044 shell:write
+  PCOR 0x50096048 shell:write
+  PTOR 0x5009604c shell:write
+  PDIR 0x50096050 shell:read
+  PDDR 0x50096054 shell:read
+Writes are verified with PDOR bit 10; no LED blink task.
+mcxn947> reg read 0x50096040 32
+R32 PDOR 0x50096040 = 0x00000400
+mcxn947> reg read 0x50096054 32
+R32 PDDR 0x50096054 = 0x00000400
+mcxn947> reg read 0x50096050 32
+R32 PDIR 0x50096050 = 0x00000449

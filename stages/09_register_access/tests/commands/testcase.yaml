@@ -1,0 +1,7 @@
+tests:
+  stage9.commands:
+    platform_allow:
+      - qemu_cortex_m3
+    tags:
+      - stage9
+      - commands

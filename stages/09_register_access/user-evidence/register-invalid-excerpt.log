@@ -1,0 +1,36 @@
+mcxn947> reg read 0x50096041 32
+ERROR: address or access not permitted; see reg info
+mcxn947> reg read 0x50096120 32
+ERROR: address or access not permitted; see reg info
+mcxn947> reg read 0x50096044 32
+ERROR: address or access not permitted; see reg info
+mcxn947> reg write 0x50096050 32 0
+ERROR: address or access not permitted; see reg info
+mcxn947> reg write 0x50096040 32 0x400
+ERROR: address or access not permitted; see reg info
+mcxn947> reg write 0x50096048 32 0x401
+ERROR: write value contains bits outside 0x00000400
+mcxn947> reg read 0x50096040 16
+ERROR: invalid register command, number or width
+Register usage:
+  reg info
+  reg read <0xADDRESS> 32
+  reg write <0xADDRESS> 32 <VALUE>
+Read: PDOR/PDIR/PDDR only. Write: PSOR/PCOR/PTOR only.
+VALUE: 0 or 0x400 (GPIO0 bit 10); decimal or 0x hex.
+mcxn947> reg write 0x50096048 32 -1
+ERROR: invalid register command, number or width
+Register usage:
+  reg info
+  reg read <0xADDRESS> 32
+  reg write <0xADDRESS> 32 <VALUE>
+Read: PDOR/PDIR/PDDR only. Write: PSOR/PCOR/PTOR only.
+VALUE: 0 or 0x400 (GPIO0 bit 10); decimal or 0x hex.
+mcxn947> reg write 0x50096048 32 0x100000000
+ERROR: invalid register command, number or width
+Register usage:
+  reg info
+  reg read <0xADDRESS> 32
+  reg write <0xADDRESS> 32 <VALUE>
+Read: PDOR/PDIR/PDDR only. Write: PSOR/PCOR/PTOR only.
+VALUE: 0 or 0x400 (GPIO0 bit 10); decimal or 0x hex.
