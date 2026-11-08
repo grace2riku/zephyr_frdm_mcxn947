@@ -59,6 +59,8 @@ Slintは今回の計画から外す。過去の選定・実習記録は当時の
 
 ### 段階10：Consoleから標準Shellへ
 
+本人の依頼で2026-11-08に実装コミット`fc4a5d5`をプッシュし、[PR #31](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/31)を作成した。PRはOPEN・未マージ、イシュー #28もOPEN。マージ・クローズは本人の別途の確認・承認後に行う。
+
 2026-11-08：Consoleの1文字入出力と標準Shellのhello、LEDのon／off・点滅間隔変更・停止、ヘルプ・Tab補完・履歴、入力待ち中のLED継続を本人確認済み。最終状態は消灯・点滅停止。[段階10の記録](../stages/10_zephyr_shell/README.md)へ設定・API・処理担当の対応と実施結果を保存し、READMEの本人確認用6項目の一致確認も受領し、段階10の学習・記録確認は完了（PRマージ・イシュークローズは未承認）。
 
 - **使うZephyr機能**：Consoleの入出力API、標準Shell、UARTバックエンド、GPIO API、既習のスレッド・キュー。
