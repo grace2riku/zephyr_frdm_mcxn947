@@ -4,7 +4,8 @@ NXP FRDM-MCXN947評価ボードを使い、小さな動作確認を積み重ね�
 
 学習の軸は、**Zephyrの設定からデバイスを使う流れ、ドライバAPI、スレッド・キューによる役割分担**です。
 GPIO・UART・LCD・OV7670カメラを題材に、Devicetree／KconfigとAPIの動作を対応させます。
-NT-Shellの接続、RAM・レジスタ操作は補助教材として扱い、Slintは任意の発展課題とします。
+NT-Shellの接続、RAM・レジスタ操作は補助教材として扱います。
+2026-11-08に本人が承認したロードマップでは、標準Console／ShellとC/C++の単体テストを追加し、GUIの任意発展課題をLVGLへ変更しています。
 
 2026-11-07に本人が、段階9に限らず今後もこの目的から離れない方針を明示しました。
 各操作の前に「使うZephyr機能・目的・本人が変える点・見える動作」を短く示します。
@@ -35,7 +36,9 @@ GDBの照合やC・MCU固有の細部の調査は必要時の補助に位置付�
 
 2026-11-01：段階9（#10）に着手しました。`codex/stage9-register-access`にGPIO0 bit 10に限定するレジスタ操作を実装し、CPU0向け事前ビルド・QEMUの9テストを確認しました。本人提供のRM（Rev. 7, 2025-10-10）との本文照合もCodexが完了し、コード変更は不要でした。本人の環境4項目も一致を確認しました。2026-11-07に本人のファイル照合PASS・終了コード0と、CPU0ビルド166/166・終了コード0を確認しました。Flash 34,436 B・RAM 8,744 B。register_commands.cの理解は本人の依頼で保留し、ビルド成功とは区別しています。今回の接続先も本人の列挙でCOM5／HN2APUBRDCEPTと確認しました。本人のFlash成功表示・0x8684 Bロード・終了コード0も確認しました。本人の起動表示・プロンプト・初期LED消灯・helpの確認報告も受領しました。reg infoと3レジスタの初期readも提供UARTで確認し、LED消灯維持の報告を受領しました。PCOR 2回／PSOR 1回のOK応答・PDOR変化と、LED点灯→点灯維持→消灯の本人報告も確認しました。PTOR 2回の反転と消灯状態での3操作先への値0による状態維持もUARTと本人の目視報告で確認しました。不正入力9件の拒否と、LED消灯維持・正常readとhelpへの応答も確認しました。本人の依頼によりGDB照合は今回の必須項目から除外しました。ZephyrのGPIOドライバと設定の役割を確認する補助教材として整理し、2026-11-08に本人がREADMEの6項目と実習内容の一致を確認し、コミット・プッシュ・PR作成を依頼しました。[PR #27](https://github.com/grace2riku/zephyr_frdm_mcxn947/pull/27)を作成し、同日に本人の明示的な依頼でmainへマージしました（a198abd）。続いて本人の依頼でイシュー #10をcompletedとしてクローズしました。段階9は完了です。GDBは未実施の省略です。[段階9の仕様と手順](stages/09_register_access/README.md)を参照してください。
 
-- [段階0〜15のロードマップ](docs/roadmap.md)
+2026-11-08：本人が提案のロードマップで進めることを承認しました。段階10のConsole／標準Shellを [#28](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/28)、段階11のC/C++単体テスト（Ztest＋Twister、初期実行先はQEMU候補）を [#29](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues/29) として作成しました。旧段階10〜15は新段階12〜17へ移し、旧Slint課題は新段階16・17のLVGL課題へ変更しました。既存イシュー #11〜#16 と継続方針も更新済みです。段階10〜17は未着手で、環境構築・本人の実習は未実施です。次は段階10でConsoleの最小入出力から進めます。
+
+- [段階0〜17の学習ロードマップ](docs/roadmap.md)
 - [段階別の質問と回答 QA表](docs/qa.md)
 - [学習に使用したAIモデルの記録方法](docs/ai-models.md)
 - [学習イシュー](https://github.com/grace2riku/zephyr_frdm_mcxn947/issues)
